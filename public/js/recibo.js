@@ -148,7 +148,7 @@ document.addEventListener('alpine:init', () => {
                     return;
                 }
 
-                window.location.href = `/editar?id=${datos.reciboId}`;
+                window.location.href = `/recibo/editar?id=${datos.reciboId}`;
 
             } catch {
                 this.error = 'Error de conexión. Intenta de nuevo.';

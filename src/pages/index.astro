@@ -77,8 +77,8 @@ import Layout from '../layouts/Layout.astro';
                 <td x-text="formatearFecha(recibo.fecha_pago)"></td>
                 <td>
                   <div class="tabla__acciones">
-                    <a :href="'/editar?id=' + recibo.id" class="boton" data-tamanio="pequeno">Editar</a>
-                    <a :href="'/editar?id=' + recibo.id + '&duplicar=1'" class="boton" data-tamanio="pequeno">Duplicar</a>
+                    <a :href="'/recibo/editar?id=' + recibo.id" class="boton" data-tamanio="pequeno">Editar</a>
+                    <a :href="'/recibo/editar?id=' + recibo.id + '&duplicar=1'" class="boton" data-tamanio="pequeno">Duplicar</a>
                     <button class="boton" data-tipo="peligro" data-tamanio="pequeno" @click="confirmarEliminar(recibo)">Eliminar</button>
                   </div>
                 </td>

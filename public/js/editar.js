@@ -103,7 +103,7 @@ document.addEventListener('alpine:init', () => {
                 if (!res.ok) { this.error = datos.mensaje || 'Error al guardar.'; return; }
 
                 if (this.esDuplicar && datos.reciboId) {
-                    window.location.href = `/editar?id=${datos.reciboId}`;
+                    window.location.href = `/recibo/editar?id=${datos.reciboId}`;
                 } else {
                     // Redirige a la lista con un mensaje flash
                     sessionStorage.setItem('flash', 'Recibo actualizado correctamente.');

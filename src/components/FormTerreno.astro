@@ -1,0 +1,70 @@
+---
+const { modo = 'nuevo' } = Astro.props;
+const titulo = modo === 'editar' ? 'Editar terreno' : 'Nuevo terreno';
+---
+<div class="contenedor-medio" x-data="formTerreno">
+
+  <div class="encabezado-pagina">
+    <h1>{titulo}</h1>
+  </div>
+  <hr />
+
+  <div class="alerta" data-tipo="error" x-show="error" x-text="error" x-cloak style="margin-bottom:1rem"></div>
+
+  <div class="vacio" x-show="cargando && esEditar">Cargando terreno...</div>
+
+  <form class="pila" @submit.prevent="guardar" x-show="!(cargando && esEditar)">
+    <div class="tarjeta">
+      <div class="pila">
+
+        <div class="grupo-campo">
+          <label>
+            Comprador *
+            <span x-show="esEditar" x-cloak style="font-weight:400;font-size:0.8rem;color:#888">(no se puede cambiar)</span>
+          </label>
+          <template x-if="!esEditar">
+            <select x-model="form.compradorId" required>
+              <option value="">Selecciona un comprador...</option>
+              <template x-for="c in compradores" :key="c.id">
+                <option :value="c.id" x-text="c.nombre"></option>
+              </template>
+            </select>
+          </template>
+          <template x-if="esEditar">
+            <input type="text" :value="compradorNombre" disabled />
+          </template>
+        </div>
+
+        <div class="grupo-campo">
+          <label>Descripción *</label>
+          <textarea x-model="form.descripcion" rows="2" placeholder="Ej: Terreno de 10x20 ubicado en..." required></textarea>
+        </div>
+
+        <div class="fila">
+          <div class="grupo-campo">
+            <label>Costo total *</label>
+            <input type="number" step="0.01" min="0" x-model="form.costoTotal" placeholder="50000" required />
+          </div>
+          <div class="grupo-campo">
+            <label>Abono mínimo *</label>
+            <input type="number" step="0.01" min="0" x-model="form.abonoMinimo" placeholder="2000" required />
+          </div>
+        </div>
+
+        <div class="grupo-campo">
+          <label>Día de pago del mes</label>
+          <input type="number" min="1" max="31" x-model="form.diaPago" placeholder="2" />
+        </div>
+
+      </div>
+    </div>
+
+    <div class="fila" style="justify-content: flex-end; gap: 0.75rem;">
+      <a href="/terrenos" class="boton">Cancelar</a>
+      <button class="boton" data-tipo="primario" type="submit" :disabled="cargando">
+        <span x-text="cargando ? 'Guardando...' : 'Guardar'"></span>
+      </button>
+    </div>
+  </form>
+
+</div>

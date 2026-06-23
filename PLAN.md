@@ -56,7 +56,7 @@ Sobre el editor de recibo actual:
 
 ---
 
-## Fase 4 — CRUDs de compradores y terrenos
+## Fase 4 — CRUDs de compradores y terrenos ✅ HECHA
 
 Cada uno: **lista** (reusa tabla + buscador + paginador + sorting + empty state + modal eliminar) + **form** nuevo/editar.
 

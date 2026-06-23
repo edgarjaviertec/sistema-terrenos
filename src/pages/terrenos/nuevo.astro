@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FormTerreno from '../../components/FormTerreno.astro';
+---
+<Layout title="Nuevo Terreno — Sistema de Terrenos">
+  <FormTerreno modo="nuevo" />
+
+  <Fragment slot="scripts">
+    <script is:inline src="/js/terreno-form.js"></script>
+  </Fragment>
+</Layout>

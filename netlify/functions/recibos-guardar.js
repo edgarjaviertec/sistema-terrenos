@@ -21,7 +21,7 @@ exports.handler = async (event) => {
     const {
         nombreComprador, telefonoComprador, direccionComprador, compradorId,
         descripcionTerreno, costoTotal, abonoMinimo, frecuenciaPago, diaPago, terrenoId,
-        tipoConcepto, cantidad, concepto, fechaPago
+        tipoConcepto, cantidad, concepto, fechaPago, recibiDe
     } = body;
 
     if (!nombreComprador || !descripcionTerreno || !cantidad || !fechaPago) {
@@ -91,7 +91,7 @@ exports.handler = async (event) => {
              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 idTerreno,
-                nombreComprador.trim(),
+                (recibiDe && recibiDe.trim()) ? recibiDe.trim() : nombreComprador.trim(),
                 nuevoFolio,
                 cantidadNum,
                 tipoConcepto || 'abono',

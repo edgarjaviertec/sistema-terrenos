@@ -1,19 +1,30 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 ---
-<Layout title="Recibo — Sistema de Terrenos" chrome={false}>
+<Layout title="Nuevo Recibo — Sistema de Terrenos" chrome={false}>
   <Fragment slot="head">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
     <link rel="stylesheet" href="/css/machote.css" />
+    <style is:global>
+      .campo-nuevo {
+        background: #fffbe6;
+        border: 2px dashed var(--negro);
+        border-radius: var(--radio);
+        padding: 0.75rem;
+      }
+    </style>
   </Fragment>
 
-  <div class="layout" x-data="editarRecibo">
+  <div class="layout" x-data="nuevoRecibo">
 
     <!-- ══ ÁREA DEL MACHOTE ══ -->
     <div class="machote-area">
-      <div class="vacio" x-show="cargando" style="margin:auto;">Cargando recibo...</div>
+      <div class="vacio" x-show="!listoParaPreview" style="margin:auto; max-width:320px;">
+        <i class="fa-solid fa-file-invoice-dollar fa-4x vacio__icono"></i>
+        <p>Selecciona un comprador y un terreno para ver el recibo.</p>
+      </div>
 
-      <div class="pagina" id="machote" x-show="!cargando">
+      <div class="pagina" id="machote" x-show="listoParaPreview" x-cloak>
         <!-- ORIGINAL -->
         <section class="formato">
           <div class="m-encabezado">
@@ -21,9 +32,9 @@ import Layout from '../../layouts/Layout.astro';
             <div class="m-folio">No. <span class="num" x-text="folioFormateado"></span></div>
           </div>
           <div class="m-bloque">
-            <div class="m-fila"><span class="m-etq">NOMBRE DEL COMPRADOR:</span> <span class="m-val" x-text="r.comprador_nombre"></span></div>
-            <div class="m-fila"><span class="m-etq">TELÉFONO:</span> <span class="m-val" x-text="r.comprador_telefono || '—'"></span></div>
-            <div class="m-fila"><span class="m-etq">DIRECCIÓN:</span> <span class="m-val" x-text="r.comprador_direccion || '—'"></span></div>
+            <div class="m-fila"><span class="m-etq">NOMBRE DEL COMPRADOR:</span> <span class="m-val" x-text="comprador.nombre"></span></div>
+            <div class="m-fila"><span class="m-etq">TELÉFONO:</span> <span class="m-val" x-text="comprador.telefono || '—'"></span></div>
+            <div class="m-fila"><span class="m-etq">DIRECCIÓN:</span> <span class="m-val" x-text="comprador.direccion || '—'"></span></div>
           </div>
           <div class="m-bloque">
             <div class="m-fila"><span class="m-etq">NOMBRE DEL VENDEDOR:</span> <span class="m-val" x-text="vendedor.nombre"></span></div>
@@ -31,19 +42,19 @@ import Layout from '../../layouts/Layout.astro';
             <div class="m-fila"><span class="m-etq">DIRECCIÓN:</span> <span class="m-val" x-text="vendedor.direccion"></span></div>
           </div>
           <div class="m-pagos">
-            <div class="m-fila"><span class="m-etq">RECIBÍ DE:</span> <span class="m-val" x-text="form.recibiDe || r.comprador_nombre"></span></div>
+            <div class="m-fila"><span class="m-etq">RECIBÍ DE:</span> <span class="m-val" x-text="form.recibiDe || comprador.nombre"></span></div>
             <div class="m-fila"><span class="m-etq">LA CANTIDAD DE:</span> <span class="m-val" x-text="formatearMonto(form.cantidad)"></span></div>
             <div class="m-fila"><span class="m-etq">SON:</span> <span class="m-val" x-text="cantidadEnLetras"></span></div>
             <div class="m-fila"><span class="m-etq">POR CONCEPTO DE:</span> <span class="m-val" x-text="form.concepto"></span></div>
             <div class="m-fila"><span class="m-etq">FECHA:</span> <span class="m-val" x-text="fechaFormateada"></span></div>
           </div>
           <div class="m-nota">
-            EL COSTO TOTAL DEL TERRENO ES DE <strong x-text="formatearMonto(r.costo_total)"></strong> M.N.
+            EL COSTO TOTAL DEL TERRENO ES DE <strong x-text="formatearMonto(terreno.costo_total)"></strong> M.N.
           </div>
           <div class="m-clausulas">
             <ol>
               <li>El vendedor se compromete con los términos legales de este terreno, siempre y cuando el comprador cumpla puntualmente con los pagos fijados en este contrato.</li>
-              <li>El comprador se compromete a hacer los pagos puntualmente los días <strong x-text="r.dia_pago || '—'"></strong> de cada mes correspondiente y la cantidad mínima es de <strong x-text="formatearMonto(r.abono_minimo)"></strong>, salvo si el comprador desea pagar mayor cantidad, será aceptado por el vendedor para liquidar más rápido su terreno.</li>
+              <li>El comprador se compromete a hacer los pagos puntualmente los días <strong x-text="terreno.dia_pago || '—'"></strong> de cada mes correspondiente y la cantidad mínima es de <strong x-text="formatearMonto(terreno.abono_minimo)"></strong>, salvo si el comprador desea pagar mayor cantidad, será aceptado por el vendedor para liquidar más rápido su terreno.</li>
               <li>Una vez firmado el contrato de compraventa, no hay devolución de enganche, salvo que el comprador busque otro comprador del terreno para hacer el traspaso correspondiente a nombre del nuevo comprador.</li>
               <li>Cabe mencionar que estos terrenos son rurales; por el momento no cuentan con servicios de luz y agua, hasta que se extienda la población.</li>
             </ol>
@@ -61,9 +72,9 @@ import Layout from '../../layouts/Layout.astro';
             <div class="m-folio">No. <span class="num" x-text="folioFormateado"></span></div>
           </div>
           <div class="m-bloque">
-            <div class="m-fila"><span class="m-etq">NOMBRE DEL COMPRADOR:</span> <span class="m-val" x-text="r.comprador_nombre"></span></div>
-            <div class="m-fila"><span class="m-etq">TELÉFONO:</span> <span class="m-val" x-text="r.comprador_telefono || '—'"></span></div>
-            <div class="m-fila"><span class="m-etq">DIRECCIÓN:</span> <span class="m-val" x-text="r.comprador_direccion || '—'"></span></div>
+            <div class="m-fila"><span class="m-etq">NOMBRE DEL COMPRADOR:</span> <span class="m-val" x-text="comprador.nombre"></span></div>
+            <div class="m-fila"><span class="m-etq">TELÉFONO:</span> <span class="m-val" x-text="comprador.telefono || '—'"></span></div>
+            <div class="m-fila"><span class="m-etq">DIRECCIÓN:</span> <span class="m-val" x-text="comprador.direccion || '—'"></span></div>
           </div>
           <div class="m-bloque">
             <div class="m-fila"><span class="m-etq">NOMBRE DEL VENDEDOR:</span> <span class="m-val" x-text="vendedor.nombre"></span></div>
@@ -71,19 +82,19 @@ import Layout from '../../layouts/Layout.astro';
             <div class="m-fila"><span class="m-etq">DIRECCIÓN:</span> <span class="m-val" x-text="vendedor.direccion"></span></div>
           </div>
           <div class="m-pagos">
-            <div class="m-fila"><span class="m-etq">RECIBÍ DE:</span> <span class="m-val" x-text="form.recibiDe || r.comprador_nombre"></span></div>
+            <div class="m-fila"><span class="m-etq">RECIBÍ DE:</span> <span class="m-val" x-text="form.recibiDe || comprador.nombre"></span></div>
             <div class="m-fila"><span class="m-etq">LA CANTIDAD DE:</span> <span class="m-val" x-text="formatearMonto(form.cantidad)"></span></div>
             <div class="m-fila"><span class="m-etq">SON:</span> <span class="m-val" x-text="cantidadEnLetras"></span></div>
             <div class="m-fila"><span class="m-etq">POR CONCEPTO DE:</span> <span class="m-val" x-text="form.concepto"></span></div>
             <div class="m-fila"><span class="m-etq">FECHA:</span> <span class="m-val" x-text="fechaFormateada"></span></div>
           </div>
           <div class="m-nota">
-            EL COSTO TOTAL DEL TERRENO ES DE <strong x-text="formatearMonto(r.costo_total)"></strong> M.N.
+            EL COSTO TOTAL DEL TERRENO ES DE <strong x-text="formatearMonto(terreno.costo_total)"></strong> M.N.
           </div>
           <div class="m-clausulas">
             <ol>
               <li>El vendedor se compromete con los términos legales de este terreno, siempre y cuando el comprador cumpla puntualmente con los pagos fijados en este contrato.</li>
-              <li>El comprador se compromete a hacer los pagos puntualmente los días <strong x-text="r.dia_pago || '—'"></strong> de cada mes correspondiente y la cantidad mínima es de <strong x-text="formatearMonto(r.abono_minimo)"></strong>, salvo si el comprador desea pagar mayor cantidad, será aceptado por el vendedor para liquidar más rápido su terreno.</li>
+              <li>El comprador se compromete a hacer los pagos puntualmente los días <strong x-text="terreno.dia_pago || '—'"></strong> de cada mes correspondiente y la cantidad mínima es de <strong x-text="formatearMonto(terreno.abono_minimo)"></strong>, salvo si el comprador desea pagar mayor cantidad, será aceptado por el vendedor para liquidar más rápido su terreno.</li>
               <li>Una vez firmado el contrato de compraventa, no hay devolución de enganche, salvo que el comprador busque otro comprador del terreno para hacer el traspaso correspondiente a nombre del nuevo comprador.</li>
               <li>Cabe mencionar que estos terrenos son rurales; por el momento no cuentan con servicios de luz y agua, hasta que se extienda la población.</li>
             </ol>
@@ -100,9 +111,7 @@ import Layout from '../../layouts/Layout.astro';
     <aside class="sidebar" :data-cerrado="!sidebarAbierto || undefined">
 
       <div class="sidebar-header">
-        <div class="sidebar-header-texto">
-          <div class="titulo-seccion" x-text="esDuplicar ? 'DUPLICAR RECIBO' : 'EDITAR RECIBO'"></div>
-        </div>
+        <div class="titulo-seccion">NUEVO RECIBO</div>
         <button type="button" class="sidebar-cerrar" @click="sidebarAbierto = false" aria-label="Cerrar">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -110,12 +119,71 @@ import Layout from '../../layouts/Layout.astro';
 
       <div class="sidebar-body">
         <div class="alerta-sidebar" data-tipo="error" x-show="error" x-text="error"></div>
-        <div class="alerta-sidebar" data-tipo="exito" x-show="exito" x-text="exito"></div>
 
-        <form class="pila" style="gap:0.75rem;" @submit.prevent="guardar" id="form-editar">
+        <form @submit.prevent="guardar" id="form-nuevo" class="pila" style="gap:0.75rem;">
+
+          <p class="seccion-titulo">Comprador</p>
+          <div class="grupo-campo">
+            <label>Comprador</label>
+            <select x-model="compradorSel" @change="alCambiarComprador">
+              <option value="">Selecciona...</option>
+              <template x-for="c in compradores" :key="c.id">
+                <option :value="c.id" x-text="c.nombre"></option>
+              </template>
+              <option value="nuevo">+ Nuevo comprador</option>
+            </select>
+          </div>
+          <div class="campo-nuevo pila" x-show="esCompradorNuevo" x-cloak style="gap:0.5rem;">
+            <div class="grupo-campo">
+              <label>Nombre *</label>
+              <input type="text" x-model="comprador.nombre" />
+            </div>
+            <div class="grupo-campo">
+              <label>Teléfono</label>
+              <input type="tel" x-model="comprador.telefono" />
+            </div>
+            <div class="grupo-campo">
+              <label>Dirección</label>
+              <input type="text" x-model="comprador.direccion" />
+            </div>
+          </div>
+
+          <p class="seccion-titulo">Terreno</p>
+          <div class="grupo-campo">
+            <label>Terreno</label>
+            <select x-model="terrenoSel" @change="alCambiarTerreno" :disabled="!compradorSel || esCompradorNuevo">
+              <option value="">Selecciona...</option>
+              <template x-for="t in terrenos" :key="t.id">
+                <option :value="t.id" x-text="t.descripcion"></option>
+              </template>
+              <option value="nuevo">+ Nuevo terreno</option>
+            </select>
+          </div>
+          <div class="campo-nuevo pila" x-show="esTerrenoNuevo" x-cloak style="gap:0.5rem;">
+            <div class="grupo-campo">
+              <label>Descripción *</label>
+              <textarea x-model="terreno.descripcion" rows="2"></textarea>
+            </div>
+            <div class="fila">
+              <div class="grupo-campo">
+                <label>Costo total *</label>
+                <input type="number" step="0.01" x-model="terreno.costo_total" />
+              </div>
+              <div class="grupo-campo">
+                <label>Abono mínimo *</label>
+                <input type="number" step="0.01" x-model="terreno.abono_minimo" />
+              </div>
+            </div>
+            <div class="grupo-campo">
+              <label>Día de pago</label>
+              <input type="number" min="1" max="31" x-model="terreno.dia_pago" />
+            </div>
+          </div>
+
+          <p class="seccion-titulo">Datos del pago</p>
           <div class="grupo-campo">
             <label>Fecha de pago</label>
-            <input type="text" x-ref="fechaEditar" required />
+            <input type="text" x-ref="fechaNuevo" />
           </div>
           <div class="grupo-campo">
             <label>Recibí de</label>
@@ -123,7 +191,7 @@ import Layout from '../../layouts/Layout.astro';
           </div>
           <div class="grupo-campo">
             <label>Cantidad</label>
-            <input type="number" step="0.01" x-model="form.cantidad" required />
+            <input type="number" step="0.01" x-model="form.cantidad" />
           </div>
           <div class="grupo-campo">
             <label>Concepto</label>
@@ -134,10 +202,9 @@ import Layout from '../../layouts/Layout.astro';
 
       <div class="sidebar-footer">
         <button class="boton" @click="imprimir"><i class="fa-solid fa-print"></i> Imprimir</button>
-        <button class="boton" @click="guardarPDF"><i class="fa-solid fa-file-pdf"></i> Descargar PDF</button>
         <div class="fila-botones">
           <a href="/" class="boton" style="text-align:center;"><i class="fa-solid fa-x"></i> Cancelar</a>
-          <button type="submit" form="form-editar" class="boton" data-tipo="primario" :disabled="cargando">
+          <button type="submit" form="form-nuevo" class="boton" data-tipo="primario" :disabled="cargando">
             <i class="fa-solid fa-check"></i> <span x-text="cargando ? 'Guardando...' : 'Guardar'"></span>
           </button>
         </div>
@@ -145,7 +212,6 @@ import Layout from '../../layouts/Layout.astro';
 
     </aside>
 
-    <!-- Tab siempre visible que se mueve con el sidebar -->
     <button class="sidebar-tab" @click="sidebarAbierto = !sidebarAbierto" :class="{ 'sidebar-tab--abierto': sidebarAbierto }">
       <i class="fa-solid" :class="sidebarAbierto ? 'fa-angle-right' : 'fa-angle-left'"></i>
     </button>
@@ -155,7 +221,6 @@ import Layout from '../../layouts/Layout.astro';
   <Fragment slot="scripts">
     <script is:inline src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script is:inline src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
-    <script is:inline src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
-    <script is:inline src="/js/editar.js"></script>
+    <script is:inline src="/js/nuevo-recibo.js"></script>
   </Fragment>
 </Layout>

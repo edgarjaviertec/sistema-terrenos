@@ -10,7 +10,7 @@ exports.handler = async (event) => {
     try {
         const db = await obtenerConexion();
         const [opciones] = await db.execute(
-            'SELECT id, nombre FROM compradores ORDER BY nombre ASC'
+            'SELECT id, nombre, telefono, direccion FROM compradores ORDER BY nombre ASC'
         );
         return { statusCode: 200, body: JSON.stringify({ opciones }) };
 

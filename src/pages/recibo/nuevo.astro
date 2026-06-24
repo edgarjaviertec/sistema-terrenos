@@ -151,7 +151,7 @@ import Layout from '../../layouts/Layout.astro';
           </div>
           <div class="campo-nuevo pila" x-show="esCompradorNuevo" x-cloak style="gap:0.5rem;">
             <div class="grupo-campo">
-              <label>Nombre *</label>
+              <label>Nombre</label>
               <input type="text" x-model="comprador.nombre" />
             </div>
             <div class="grupo-campo">
@@ -171,16 +171,16 @@ import Layout from '../../layouts/Layout.astro';
           </div>
           <div class="campo-nuevo pila" x-show="esTerrenoNuevo" x-cloak style="gap:0.5rem;">
             <div class="grupo-campo">
-              <label>Descripción *</label>
+              <label>Descripción</label>
               <textarea x-model="terreno.descripcion" rows="2"></textarea>
             </div>
             <div class="fila">
               <div class="grupo-campo">
-                <label>Costo total *</label>
+                <label>Costo total</label>
                 <input type="number" step="0.01" x-model="terreno.costo_total" />
               </div>
               <div class="grupo-campo">
-                <label>Abono mínimo *</label>
+                <label>Abono mínimo</label>
                 <input type="number" step="0.01" x-model="terreno.abono_minimo" />
               </div>
             </div>

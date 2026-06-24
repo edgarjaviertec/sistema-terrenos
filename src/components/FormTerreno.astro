@@ -19,7 +19,7 @@ const titulo = modo === 'editar' ? 'Editar terreno' : 'Nuevo terreno';
 
         <div class="grupo-campo">
           <label>
-            Comprador *
+            Comprador
             <span x-show="esEditar" x-cloak style="font-weight:400;font-size:0.8rem;color:#888">(no se puede cambiar)</span>
           </label>
           <template x-if="!esEditar">
@@ -36,17 +36,17 @@ const titulo = modo === 'editar' ? 'Editar terreno' : 'Nuevo terreno';
         </div>
 
         <div class="grupo-campo">
-          <label>Descripción *</label>
+          <label>Descripción</label>
           <textarea x-model="form.descripcion" rows="2" placeholder="Ej: Terreno de 10x20 ubicado en..." required></textarea>
         </div>
 
         <div class="fila">
           <div class="grupo-campo">
-            <label>Costo total *</label>
+            <label>Costo total</label>
             <input type="number" step="0.01" min="0" x-model="form.costoTotal" placeholder="50000" required />
           </div>
           <div class="grupo-campo">
-            <label>Abono mínimo *</label>
+            <label>Abono mínimo</label>
             <input type="number" step="0.01" min="0" x-model="form.abonoMinimo" placeholder="2000" required />
           </div>
         </div>

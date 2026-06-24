@@ -139,6 +139,13 @@ hr {
     gap: 0.25rem;
 }
 
+.grupo-campo:has(> :required) label::after{
+    content: "\*" / "";
+    color: var(--rojo);
+    font-family: "Font Awesome 7 Pro";
+    font-size: 18px;
+}
+
 /* ─── COMPONENTS ─── */
 
 /* Botones */

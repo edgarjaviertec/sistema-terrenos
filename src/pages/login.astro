@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Entrar — Sistema de Terrenos" chrome={false} protegida={false}>
+  <div class="contenedor-angosto" style="padding-top: 4rem;">
+    <div class="tarjeta" x-data="loginFormulario">
+      <div class="pila">
+        <h1 class="centrado">Sistema de Terrenos</h1>
+
+        <div class="alerta" data-tipo="error" x-show="error" x-text="error" style="display:none"></div>
+
+        <form class="pila" @submit.prevent="entrar">
+          <div class="grupo-campo">
+            <label for="usuario">Usuario</label>
+            <input
+              id="usuario"
+              type="text"
+              placeholder="nombre de usuario"
+              x-model="usuario"
+              autocomplete="username"
+              required
+            />
+          </div>
+
+          <div class="grupo-campo">
+            <label for="contrasena">Contraseña</label>
+            <input
+              id="contrasena"
+              type="password"
+              placeholder="contraseña"
+              x-model="contrasena"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+
+          <button class="boton" data-tipo="primario" type="submit" :disabled="cargando">
+            <span x-text="cargando ? 'Entrando...' : 'Entrar'"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <Fragment slot="scripts">
+    <script is:inline src="/js/login.js"></script>
+  </Fragment>
+</Layout>

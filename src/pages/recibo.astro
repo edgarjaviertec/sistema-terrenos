@@ -1,0 +1,176 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Nuevo Recibo — Sistema de Terrenos">
+  <Fragment slot="head">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <style is:global>
+        .autocomplete { position: relative; }
+        .autocomplete__lista {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--blanco);
+            border: var(--borde);
+            border-top: none;
+            border-radius: 0 0 var(--radio) var(--radio);
+            box-shadow: var(--sombra);
+            z-index: 20;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .autocomplete__opcion { padding: 0.6rem 0.75rem; cursor: pointer; font-size: 0.95rem; }
+        .autocomplete__opcion:hover { background: #f5f5f5; }
+        .seccion-titulo {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+        .campo-nuevo {
+            background: #fffbe6;
+            border: 2px dashed var(--negro);
+            border-radius: var(--radio);
+            padding: 1rem;
+        }
+    </style>
+  </Fragment>
+
+  <div class="contenedor" x-data="nuevoRecibo">
+
+    <div class="alerta mt-1" data-tipo="error" x-show="error" x-text="error"></div>
+    <div class="alerta mt-1" data-tipo="exito" x-show="exito" x-text="exito"></div>
+
+    <form class="pila mt-1" @submit.prevent="guardar">
+
+      <!-- COMPRADOR -->
+      <div class="tarjeta">
+        <p class="seccion-titulo">Datos del comprador</p>
+        <div class="pila">
+          <div class="grupo-campo autocomplete">
+            <label>Nombre del comprador *</label>
+            <input
+              type="text"
+              placeholder="Escribe el nombre..."
+              x-model="form.nombreComprador"
+              @input="buscarComprador"
+              @blur="cerrarSugerencias('comprador')"
+              autocomplete="off"
+              required
+            />
+            <div class="autocomplete__lista" x-show="sugerenciasComprador.length > 0">
+              <template x-for="s in sugerenciasComprador" :key="s.id">
+                <div class="autocomplete__opcion" @mousedown.prevent="seleccionarComprador(s)" x-text="s.nombre"></div>
+              </template>
+            </div>
+          </div>
+
+          <div class="campo-nuevo" x-show="compradorNuevo">
+            <p class="seccion-titulo">Comprador nuevo — datos adicionales</p>
+            <div class="pila">
+              <div class="grupo-campo">
+                <label>Teléfono</label>
+                <input type="tel" placeholder="9981234567" x-model="form.telefonoComprador" />
+              </div>
+              <div class="grupo-campo">
+                <label>Dirección</label>
+                <input type="text" placeholder="Calle, colonia, ciudad" x-model="form.direccionComprador" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TERRENO -->
+      <div class="tarjeta">
+        <p class="seccion-titulo">Terreno</p>
+        <div class="pila">
+          <div class="grupo-campo autocomplete">
+            <label>Descripción del terreno *</label>
+            <input
+              type="text"
+              placeholder="Ej: 10x20 en Tekom..."
+              x-model="form.descripcionTerreno"
+              @input="buscarTerreno"
+              @blur="cerrarSugerencias('terreno')"
+              autocomplete="off"
+              required
+            />
+            <div class="autocomplete__lista" x-show="sugerenciasTerreno.length > 0">
+              <template x-for="s in sugerenciasTerreno" :key="s.id">
+                <div class="autocomplete__opcion" @mousedown.prevent="seleccionarTerreno(s)" x-text="s.descripcion"></div>
+              </template>
+            </div>
+          </div>
+
+          <div class="campo-nuevo" x-show="terrenoNuevo">
+            <p class="seccion-titulo">Terreno nuevo — datos adicionales</p>
+            <div class="pila">
+              <div class="fila">
+                <div class="grupo-campo">
+                  <label>Costo total *</label>
+                  <input type="number" step="0.01" placeholder="50000" x-model="form.costoTotal" />
+                </div>
+                <div class="grupo-campo">
+                  <label>Abono mínimo *</label>
+                  <input type="number" step="0.01" placeholder="2000" x-model="form.abonoMinimo" />
+                </div>
+              </div>
+              <div class="fila">
+                <div class="grupo-campo">
+                  <label>Frecuencia de pago</label>
+                  <select x-model="form.frecuenciaPago">
+                    <option value="mensual">Mensual</option>
+                    <option value="semanal">Semanal</option>
+                    <option value="anual">Anual</option>
+                  </select>
+                </div>
+                <div class="grupo-campo">
+                  <label>Día de pago</label>
+                  <input type="number" min="1" max="31" placeholder="2" x-model="form.diaPago" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGO -->
+      <div class="tarjeta">
+        <p class="seccion-titulo">Datos del pago</p>
+        <div class="pila">
+          <div class="grupo-campo">
+            <label>Cantidad *</label>
+            <input type="number" step="0.01" placeholder="2000" x-model="form.cantidad" required />
+          </div>
+          <div class="grupo-campo">
+            <label>Concepto</label>
+            <input type="text" placeholder="Enganche, abono mensual..." x-model="form.concepto" />
+          </div>
+          <div class="grupo-campo">
+            <label>Fecha del pago *</label>
+            <input type="text" x-ref="fechaPago" placeholder="dd/mm/aaaa" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTONES -->
+      <div class="fila" style="justify-content: flex-end; gap: 0.75rem;">
+        <a href="/" class="boton">Cancelar</a>
+        <button class="boton" data-tipo="primario" type="submit" :disabled="cargando">
+          <span x-text="cargando ? 'Guardando...' : 'Guardar Recibo'"></span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <Fragment slot="scripts">
+    <script is:inline src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script is:inline src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+    <script is:inline src="/js/recibo.js"></script>
+  </Fragment>
+</Layout>

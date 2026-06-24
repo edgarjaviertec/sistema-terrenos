@@ -1,0 +1,10 @@
+.env
+node_modules/
+.DS_Store
+
+# Astro
+dist/
+.astro/
+
+# Local Netlify folder
+.netlify

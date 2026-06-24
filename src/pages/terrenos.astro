@@ -1,0 +1,125 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Terrenos — Sistema de Terrenos">
+  <div class="contenedor" x-data="listaTerrenos">
+
+    <!-- Encabezado -->
+    <div class="encabezado-pagina">
+      <h1>Terrenos</h1>
+      <a href="/terrenos/nuevo" class="boton" data-tipo="primario">+ Nuevo Terreno</a>
+    </div>
+    <hr />
+
+    <!-- Mensaje flash -->
+    <div class="alerta" data-tipo="exito" x-show="exito" x-text="exito" x-cloak style="margin-bottom:1rem"></div>
+
+    <!-- Buscador -->
+    <div class="tarjeta">
+      <div class="buscador">
+        <div class="grupo-campo">
+          <label>Descripción o comprador</label>
+          <div class="campo-icono">
+            <input type="text" placeholder="Buscar por descripción o comprador..." x-model.debounce.400ms="filtros.texto" />
+            <button class="campo-icono__limpiar" x-show="filtros.texto" @click="limpiarTexto" title="Limpiar">
+              <i class="fa-solid fa-x"></i>
+            </button>
+          </div>
+        </div>
+        <div class="grupo-campo" style="flex:0 1 200px;">
+          <label>Estado</label>
+          <select x-model="filtros.estado" @change="buscar">
+            <option value="">Todos</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="pagado">Pagado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="alerta mt-1" data-tipo="error" x-show="error" x-text="error"></div>
+
+    <!-- Tabla -->
+    <div class="tarjeta mt-1">
+      <div class="vacio" x-show="cargando">Cargando terrenos...</div>
+
+      <div class="vacio" x-show="!cargando && items.length === 0">
+        <i class="fa-solid fa-map-location-dot fa-4x vacio__icono"></i>
+        <p>No se encontraron terrenos.</p>
+      </div>
+
+      <template x-if="!cargando && items.length > 0">
+        <div class="tabla-responsiva">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th class="th-orden" @click="ordenar('descripcion')">Descripción <i class="fa-solid" :class="iconoOrden('descripcion')"></i></th>
+                <th class="th-orden" @click="ordenar('comprador')">Comprador <i class="fa-solid" :class="iconoOrden('comprador')"></i></th>
+                <th class="th-orden" @click="ordenar('costo')">Costo total <i class="fa-solid" :class="iconoOrden('costo')"></i></th>
+                <th class="th-orden" @click="ordenar('saldo')">Saldo <i class="fa-solid" :class="iconoOrden('saldo')"></i></th>
+                <th class="th-orden" @click="ordenar('estado')">Estado <i class="fa-solid" :class="iconoOrden('estado')"></i></th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="t in items" :key="t.id">
+                <tr>
+                  <td x-text="t.descripcion"></td>
+                  <td x-text="t.comprador_nombre"></td>
+                  <td x-text="formatearMonto(t.costo_total)"></td>
+                  <td x-text="formatearMonto(t.saldo_actual)"></td>
+                  <td style="text-transform:capitalize" x-text="t.estado"></td>
+                  <td>
+                    <div class="tabla__acciones">
+                      <a :href="'/terrenos/editar?id=' + t.id" class="boton" data-tamanio="pequeno">Editar</a>
+                      <button class="boton" data-tipo="peligro" data-tamanio="pequeno" @click="confirmarEliminar(t)">Eliminar</button>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </div>
+
+    <!-- Paginación -->
+    <div class="paginacion mt-1" x-show="!cargando && total > 0">
+      <div class="paginacion__izq">
+        <span>Mostrar</span>
+        <select x-model.number="porPagina" @change="cambiarPorPagina">
+          <template x-for="opcion in opcionesPorPagina" :key="opcion">
+            <option :value="opcion" x-text="opcion"></option>
+          </template>
+        </select>
+        <span>registros</span>
+      </div>
+
+      <div class="paginacion__info" x-text="rangoMostrado"></div>
+
+      <div class="paginacion__paginas">
+        <button class="paginacion__pag" @click="irPagina(1)" :disabled="paginaActual === 1" title="Primera">
+          <i class="fa-solid fa-angles-left"></i>
+        </button>
+        <button class="paginacion__pag" @click="irPagina(paginaActual - 1)" :disabled="paginaActual === 1" title="Anterior">
+          <i class="fa-solid fa-angle-left"></i>
+        </button>
+        <template x-for="pag in paginasVisibles" :key="pag">
+          <button class="paginacion__pag" @click="irPagina(pag)" :data-activa="pag === paginaActual || undefined" x-text="pag"></button>
+        </template>
+        <button class="paginacion__pag" @click="irPagina(paginaActual + 1)" :disabled="paginaActual === totalPaginas" title="Siguiente">
+          <i class="fa-solid fa-angle-right"></i>
+        </button>
+        <button class="paginacion__pag" @click="irPagina(totalPaginas)" :disabled="paginaActual === totalPaginas" title="Última">
+          <i class="fa-solid fa-angles-right"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <Fragment slot="scripts">
+    <script is:inline src="/js/terrenos.js"></script>
+  </Fragment>
+</Layout>

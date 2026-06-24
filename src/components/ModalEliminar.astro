@@ -1,0 +1,40 @@
+---
+// Modal de confirmación de borrado, controlado por el store global $store.modalEliminar
+---
+<div class="modal-overlay" x-show="$store.modalEliminar.abierto" x-cloak @click.self="$store.modalEliminar.cerrar()">
+  <div class="modal-caja">
+    <div class="modal-encabezado">
+      <h2 x-text="$store.modalEliminar.titulo"></h2>
+    </div>
+
+    <div class="modal-cuerpo">
+      <p x-text="$store.modalEliminar.mensaje"></p>
+
+      <template x-if="$store.modalEliminar.dependencias.length > 0">
+        <div class="modal-dependencias">
+          <p>Adicionalmente se borrarán:</p>
+          <ul>
+            <template x-for="d in $store.modalEliminar.dependencias" :key="d.etiqueta">
+              <li><strong x-text="d.cantidad"></strong> <span x-text="d.etiqueta"></span></li>
+            </template>
+          </ul>
+        </div>
+      </template>
+
+      <p class="modal-aviso">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Esta acción es permanente y no se puede deshacer.
+      </p>
+
+      <div class="alerta" data-tipo="error" x-show="$store.modalEliminar.error" x-text="$store.modalEliminar.error" style="margin-top:1rem"></div>
+    </div>
+
+    <div class="modal-pie">
+      <button class="boton" @click="$store.modalEliminar.cerrar()" :disabled="$store.modalEliminar.cargando">Cancelar</button>
+      <button class="boton" data-tipo="peligro" @click="$store.modalEliminar.confirmar()" :disabled="$store.modalEliminar.cargando">
+        <i class="fa-solid fa-trash"></i>
+        <span x-text="$store.modalEliminar.cargando ? 'Eliminando...' : 'Eliminar'"></span>
+      </button>
+    </div>
+  </div>
+</div>

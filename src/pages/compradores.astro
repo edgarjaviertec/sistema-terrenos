@@ -1,0 +1,115 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Compradores — Sistema de Terrenos">
+  <div class="contenedor" x-data="listaCompradores">
+
+    <!-- Encabezado -->
+    <div class="encabezado-pagina">
+      <h1>Compradores</h1>
+      <a href="/compradores/nuevo" class="boton" data-tipo="primario">+ Nuevo Comprador</a>
+    </div>
+    <hr />
+
+    <!-- Mensaje flash -->
+    <div class="alerta" data-tipo="exito" x-show="exito" x-text="exito" x-cloak style="margin-bottom:1rem"></div>
+
+    <!-- Buscador -->
+    <div class="tarjeta">
+      <div class="buscador">
+        <div class="grupo-campo">
+          <label>Nombre o teléfono</label>
+          <div class="campo-icono">
+            <input type="text" placeholder="Buscar por nombre o teléfono..." x-model.debounce.400ms="filtros.texto" />
+            <button class="campo-icono__limpiar" x-show="filtros.texto" @click="limpiarTexto" title="Limpiar">
+              <i class="fa-solid fa-x"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="alerta mt-1" data-tipo="error" x-show="error" x-text="error"></div>
+
+    <!-- Tabla -->
+    <div class="tarjeta mt-1">
+      <div class="vacio" x-show="cargando">Cargando compradores...</div>
+
+      <div class="vacio" x-show="!cargando && items.length === 0">
+        <i class="fa-solid fa-users fa-4x vacio__icono"></i>
+        <p>No se encontraron compradores.</p>
+      </div>
+
+      <template x-if="!cargando && items.length > 0">
+        <div class="tabla-responsiva">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th class="th-orden" @click="ordenar('nombre')">Nombre <i class="fa-solid" :class="iconoOrden('nombre')"></i></th>
+                <th class="th-orden" @click="ordenar('telefono')">Teléfono <i class="fa-solid" :class="iconoOrden('telefono')"></i></th>
+                <th>Dirección</th>
+                <th class="th-orden" @click="ordenar('terrenos')">Terrenos <i class="fa-solid" :class="iconoOrden('terrenos')"></i></th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="c in items" :key="c.id">
+                <tr>
+                  <td x-text="c.nombre"></td>
+                  <td x-text="c.telefono || '—'"></td>
+                  <td x-text="c.direccion || '—'"></td>
+                  <td x-text="c.terrenos_count"></td>
+                  <td>
+                    <div class="tabla__acciones">
+                      <a :href="'/compradores/editar?id=' + c.id" class="boton" data-tamanio="pequeno">Editar</a>
+                      <button class="boton" data-tipo="peligro" data-tamanio="pequeno" @click="confirmarEliminar(c)">Eliminar</button>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </div>
+
+    <!-- Paginación -->
+    <div class="paginacion mt-1" x-show="!cargando && total > 0">
+      <div class="paginacion__izq">
+        <span>Mostrar</span>
+        <select x-model.number="porPagina" @change="cambiarPorPagina">
+          <template x-for="opcion in opcionesPorPagina" :key="opcion">
+            <option :value="opcion" x-text="opcion"></option>
+          </template>
+        </select>
+        <span>registros</span>
+      </div>
+
+      <div class="paginacion__info" x-text="rangoMostrado"></div>
+
+      <div class="paginacion__paginas">
+        <button class="paginacion__pag" @click="irPagina(1)" :disabled="paginaActual === 1" title="Primera">
+          <i class="fa-solid fa-angles-left"></i>
+        </button>
+        <button class="paginacion__pag" @click="irPagina(paginaActual - 1)" :disabled="paginaActual === 1" title="Anterior">
+          <i class="fa-solid fa-angle-left"></i>
+        </button>
+        <template x-for="pag in paginasVisibles" :key="pag">
+          <button class="paginacion__pag" @click="irPagina(pag)" :data-activa="pag === paginaActual || undefined" x-text="pag"></button>
+        </template>
+        <button class="paginacion__pag" @click="irPagina(paginaActual + 1)" :disabled="paginaActual === totalPaginas" title="Siguiente">
+          <i class="fa-solid fa-angle-right"></i>
+        </button>
+        <button class="paginacion__pag" @click="irPagina(totalPaginas)" :disabled="paginaActual === totalPaginas" title="Última">
+          <i class="fa-solid fa-angles-right"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <Fragment slot="scripts">
+    <script is:inline src="/js/compradores.js"></script>
+  </Fragment>
+</Layout>

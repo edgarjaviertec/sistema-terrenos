@@ -1,0 +1,49 @@
+---
+const { modo = 'nuevo' } = Astro.props;
+const titulo = modo === 'editar' ? 'Editar comprador' : 'Nuevo comprador';
+---
+<div class="contenedor-medio" x-data="formComprador">
+
+  <div class="encabezado-pagina">
+    <h1>{titulo}</h1>
+  </div>
+  <hr />
+
+  <div class="alerta" data-tipo="error" x-show="error" x-text="error" x-cloak style="margin-bottom:1rem"></div>
+
+  <div class="vacio" x-show="cargando && esEditar">Cargando comprador...</div>
+
+  <form class="pila" @submit.prevent="guardar" x-show="!(cargando && esEditar)">
+    <div class="tarjeta">
+      <div class="pila">
+        <div class="grupo-campo">
+          <label>Nombre *</label>
+          <input type="text" x-model="form.nombre" required />
+        </div>
+        <div class="grupo-campo">
+          <label>Teléfono</label>
+          <input
+            type="tel"
+            x-model="form.telefono"
+            placeholder="9981234567"
+            maxlength="10"
+            pattern="^(55|33|81|449|461|938|834|987|618|473|462|477|868|782|222|442|899|464|844|444|472|833|311|779|722|871|229|325|633|597|732|317|958|624|828|981|645|998|983|614|756|747|877|648|613|639|341|786|656|831|791|312|271|735|777|481|475|646|324|676|622|662|435|917|727|733|721|228|463|494|734|971|393|612|352|474|284|728|354|632|314|232|669|999|686|922|754|826|443|642|631|867|392|626|272|771|842|469|758|878|638|322|438|487|661|861|353|466|967|841|381|427|415|891|713|384|356|762|389|238|736|714|374|595|231|664|757|246|773|775|783|287|314|961|452|726|993|436|492|351|755|715|591|744|862|453|244|767|625|644|921|667|493|673|687|615|647|243|668|488|866|634|636|951|627|294|653|323|962|665|313|378|965|451)\d{7,8}$"
+            title="Teléfono de 10 dígitos con lada válida (ej. 9981234567)"
+          />
+        </div>
+        <div class="grupo-campo">
+          <label>Dirección</label>
+          <input type="text" x-model="form.direccion" placeholder="Calle, colonia, ciudad" />
+        </div>
+      </div>
+    </div>
+
+    <div class="fila" style="justify-content: flex-end; gap: 0.75rem;">
+      <a href="/compradores" class="boton">Cancelar</a>
+      <button class="boton" data-tipo="primario" type="submit" :disabled="cargando">
+        <span x-text="cargando ? 'Guardando...' : 'Guardar'"></span>
+      </button>
+    </div>
+  </form>
+
+</div>

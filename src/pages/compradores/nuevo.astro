@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FormComprador from '../../components/FormComprador.astro';
+---
+<Layout title="Nuevo Comprador — Sistema de Terrenos">
+  <FormComprador modo="nuevo" />
+
+  <Fragment slot="scripts">
+    <script is:inline src="/js/comprador-form.js"></script>
+  </Fragment>
+</Layout>

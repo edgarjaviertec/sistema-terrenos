@@ -1,0 +1,69 @@
+---
+import ModalEliminar from '../components/ModalEliminar.astro';
+
+const {
+  title = 'Sistema de Terrenos',
+  chrome = true,
+  protegida = true
+} = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+  <link rel="stylesheet" href="/css/estilos.css" />
+  <slot name="head" />
+  {protegida && <script is:inline src="/js/auth-guard.js"></script>}
+</head>
+<body>
+  {chrome ? (
+    <div class="app" x-data="appLayout">
+      <div class="app__backdrop no-imprimir" x-show="sidebarAbierto" @click="cerrar()" x-cloak></div>
+
+      <aside class="app__sidebar no-imprimir" :class="sidebarAbierto && 'app__sidebar--abierto'">
+        <div class="app__marca">Sistema de Terrenos</div>
+        <nav class="app__nav">
+          <a href="/" class="app__link"><i class="fa-solid fa-file-invoice"></i> Recibos</a>
+          <a href="/compradores" class="app__link"><i class="fa-solid fa-users"></i> Compradores</a>
+          <a href="/terrenos" class="app__link"><i class="fa-solid fa-map-location-dot"></i> Terrenos</a>
+        </nav>
+      </aside>
+
+      <div class="app__main">
+        <header class="app__topbar no-imprimir">
+          <button type="button" class="app__hamburguesa" @click="abrir()" aria-label="Menú">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="app__topbar-acciones">
+            <div class="app__usuario" @click.outside="menuUsuario = false">
+              <button type="button" class="app__usuario-btn" @click="menuUsuario = !menuUsuario" aria-label="Menú de usuario">
+                <i class="fa-solid fa-circle-user"></i>
+              </button>
+              <div class="app__usuario-menu" x-show="menuUsuario" x-cloak>
+                <a href="/configuracion" class="app__usuario-item"><i class="fa-solid fa-gear"></i> Configuración</a>
+                <button type="button" class="app__usuario-item" @click="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+              </div>
+            </div>
+          </div>
+        </header>
+        <main class="app__contenido">
+          <slot />
+        </main>
+      </div>
+
+      <ModalEliminar />
+    </div>
+  ) : (
+    <slot />
+  )}
+
+  <slot name="scripts" />
+  {chrome && <script is:inline src="/js/layout.js"></script>}
+  {chrome && <script is:inline src="/js/modal-eliminar.js"></script>}
+  {chrome && <script is:inline src="/js/lista-crud.js"></script>}
+  <script is:inline src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
+</body>
+</html>

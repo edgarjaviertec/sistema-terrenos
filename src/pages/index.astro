@@ -1,0 +1,133 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Recibos — Sistema de Terrenos">
+  <Fragment slot="head">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  </Fragment>
+
+  <div class="contenedor" x-data="listaRecibos">
+
+    <!-- Encabezado -->
+    <div class="encabezado-pagina">
+      <h1>Recibos</h1>
+      <a href="/recibo" class="boton" data-tipo="primario">+ Nuevo Recibo</a>
+    </div>
+    <hr />
+
+    <!-- Mensaje flash -->
+    <div class="alerta" data-tipo="exito" x-show="exito" x-text="exito" x-cloak style="margin-bottom:1rem"></div>
+
+    <!-- Buscador -->
+    <div class="tarjeta">
+      <div class="buscador">
+        <div class="grupo-campo">
+          <label>Nombre o folio</label>
+          <div class="campo-icono">
+            <input type="text" placeholder="Buscar por nombre o folio..." x-model.debounce.400ms="filtros.texto" />
+            <button class="campo-icono__limpiar" x-show="filtros.texto" @click="limpiarTexto" title="Limpiar">
+              <i class="fa-solid fa-x"></i>
+            </button>
+          </div>
+        </div>
+        <div class="grupo-campo">
+          <label>Rango de fechas</label>
+          <div class="campo-icono" x-ref="fechaWrap">
+            <input type="text" data-input placeholder="Selecciona un rango..." />
+            <button class="campo-icono__limpiar" data-clear title="Limpiar">
+              <i class="fa-solid fa-x"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="alerta mt-1" data-tipo="error" x-show="error" x-text="error"></div>
+
+    <!-- Tabla -->
+    <div class="tarjeta mt-1">
+      <div class="vacio" x-show="cargando">Cargando recibos...</div>
+
+      <div class="vacio" x-show="!cargando && items.length === 0">
+        <i class="fa-solid fa-file-invoice-dollar fa-4x vacio__icono"></i>
+        <p>No se encontraron recibos.</p>
+      </div>
+
+      <template x-if="!cargando && items.length > 0">
+        <div class="tabla-responsiva">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th class="th-orden" @click="ordenar('folio')">Folio <i class="fa-solid" :class="iconoOrden('folio')"></i></th>
+              <th class="th-orden" @click="ordenar('comprador')">Comprador <i class="fa-solid" :class="iconoOrden('comprador')"></i></th>
+              <th class="th-orden" @click="ordenar('concepto')">Concepto <i class="fa-solid" :class="iconoOrden('concepto')"></i></th>
+              <th class="th-orden" @click="ordenar('cantidad')">Cantidad <i class="fa-solid" :class="iconoOrden('cantidad')"></i></th>
+              <th class="th-orden" @click="ordenar('fecha')">Fecha <i class="fa-solid" :class="iconoOrden('fecha')"></i></th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="recibo in items" :key="recibo.id">
+              <tr>
+                <td><span class="folio" x-text="String(recibo.folio).padStart(4,'0')"></span></td>
+                <td x-text="recibo.comprador"></td>
+                <td x-text="recibo.concepto || '—'"></td>
+                <td x-text="formatearMonto(recibo.cantidad_pago)"></td>
+                <td x-text="formatearFecha(recibo.fecha_pago)"></td>
+                <td>
+                  <div class="tabla__acciones">
+                    <a :href="'/editar?id=' + recibo.id" class="boton" data-tamanio="pequeno">Editar</a>
+                    <a :href="'/editar?id=' + recibo.id + '&duplicar=1'" class="boton" data-tamanio="pequeno">Duplicar</a>
+                    <button class="boton" data-tipo="peligro" data-tamanio="pequeno" @click="confirmarEliminar(recibo)">Eliminar</button>
+                  </div>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+        </div>
+      </template>
+    </div>
+
+    <!-- Paginación -->
+    <div class="paginacion mt-1" x-show="!cargando && total > 0">
+      <div class="paginacion__izq">
+        <span>Mostrar</span>
+        <select x-model.number="porPagina" @change="cambiarPorPagina">
+          <template x-for="opcion in opcionesPorPagina" :key="opcion">
+            <option :value="opcion" x-text="opcion"></option>
+          </template>
+        </select>
+        <span>registros</span>
+      </div>
+
+      <div class="paginacion__info" x-text="rangoMostrado"></div>
+
+      <div class="paginacion__paginas">
+        <button class="paginacion__pag" @click="irPagina(1)" :disabled="paginaActual === 1" title="Primera">
+          <i class="fa-solid fa-angles-left"></i>
+        </button>
+        <button class="paginacion__pag" @click="irPagina(paginaActual - 1)" :disabled="paginaActual === 1" title="Anterior">
+          <i class="fa-solid fa-angle-left"></i>
+        </button>
+        <template x-for="pag in paginasVisibles" :key="pag">
+          <button class="paginacion__pag" @click="irPagina(pag)" :data-activa="pag === paginaActual || undefined" x-text="pag"></button>
+        </template>
+        <button class="paginacion__pag" @click="irPagina(paginaActual + 1)" :disabled="paginaActual === totalPaginas" title="Siguiente">
+          <i class="fa-solid fa-angle-right"></i>
+        </button>
+        <button class="paginacion__pag" @click="irPagina(totalPaginas)" :disabled="paginaActual === totalPaginas" title="Última">
+          <i class="fa-solid fa-angles-right"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <Fragment slot="scripts">
+    <script is:inline src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script is:inline src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+    <script is:inline src="/js/index.js"></script>
+  </Fragment>
+</Layout>

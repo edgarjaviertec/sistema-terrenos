@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Configuración — Sistema de Terrenos">
+  <div class="contenedor-angosto" x-data="configuracion">
+
+    <div class="alerta mt-1" data-tipo="error" x-show="error" x-text="error"></div>
+    <div class="alerta mt-1" data-tipo="exito" x-show="exito" x-text="exito"></div>
+
+    <div class="vacio mt-1" x-show="cargando">Cargando configuración...</div>
+
+    <form class="pila mt-1" @submit.prevent="guardar" x-show="!cargando">
+
+      <div class="tarjeta">
+        <p style="font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#555;margin-bottom:0.75rem;">
+          Datos del vendedor
+        </p>
+        <div class="pila">
+          <div class="grupo-campo">
+            <label>Nombre del vendedor</label>
+            <input type="text" x-model="form['vendedor.nombre']" placeholder="Nombre completo" />
+          </div>
+          <div class="grupo-campo">
+            <label>Teléfono</label>
+            <input type="tel" x-model="form['vendedor.telefono']" placeholder="9981234567" />
+          </div>
+          <div class="grupo-campo">
+            <label>Dirección</label>
+            <input type="text" x-model="form['vendedor.direccion']" placeholder="Calle, colonia, ciudad" />
+          </div>
+        </div>
+      </div>
+
+      <div class="fila" style="justify-content: flex-end;">
+        <button class="boton" data-tipo="primario" type="submit" :disabled="guardando">
+          <span x-text="guardando ? 'Guardando...' : 'Guardar cambios'"></span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <Fragment slot="scripts">
+    <script is:inline src="/js/configuracion.js"></script>
+  </Fragment>
+</Layout>

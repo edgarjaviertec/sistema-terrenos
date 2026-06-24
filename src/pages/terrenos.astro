@@ -20,6 +20,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="grupo-campo">
           <label>Descripción o comprador</label>
           <div class="campo-icono">
+            <i class="campo-icono__izq fa-solid fa-magnifying-glass"></i>
             <input type="text" placeholder="Buscar por descripción o comprador..." x-model.debounce.400ms="filtros.texto" />
             <button class="campo-icono__limpiar" x-show="filtros.texto" @click="limpiarTexto" title="Limpiar">
               <i class="fa-solid fa-x"></i>

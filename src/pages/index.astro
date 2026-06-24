@@ -24,6 +24,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="grupo-campo">
           <label>Nombre o folio</label>
           <div class="campo-icono">
+            <i class="campo-icono__izq fa-solid fa-magnifying-glass"></i>
             <input type="text" placeholder="Buscar por nombre o folio..." x-model.debounce.400ms="filtros.texto" />
             <button class="campo-icono__limpiar" x-show="filtros.texto" @click="limpiarTexto" title="Limpiar">
               <i class="fa-solid fa-x"></i>
@@ -33,6 +34,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="grupo-campo">
           <label>Rango de fechas</label>
           <div class="campo-icono" x-ref="fechaWrap">
+            <i class="campo-icono__izq fa-solid fa-calendar"></i>
             <input type="text" data-input placeholder="Selecciona un rango..." />
             <button class="campo-icono__limpiar" data-clear title="Limpiar">
               <i class="fa-solid fa-x"></i>

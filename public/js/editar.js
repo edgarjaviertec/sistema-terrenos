@@ -46,7 +46,7 @@ document.addEventListener('alpine:init', () => {
                 this.form.recibiDe = this.r.recibi_de || this.r.comprador_nombre;
                 this.form.tipoConcepto = 'abono'; // siempre abono
                 this.form.cantidad = this.r.cantidad_pago;
-                this.form.concepto = (this.r.concepto || this.conceptoAuto()).toUpperCase();
+                this.form.concepto = this.r.concepto || this.conceptoAuto();
                 this.form.fechaPago = this.r.fecha_pago?.split('T')[0] || '';
 
             } catch {

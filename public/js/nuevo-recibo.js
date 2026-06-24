@@ -7,7 +7,7 @@ document.addEventListener('alpine:init', () => {
         terrenoSel: '',     // '' | id | 'nuevo'
         comprador: { nombre: '', telefono: '', direccion: '' },
         terreno: { descripcion: '', costo_total: '', abono_minimo: '', dia_pago: '' },
-        form: { recibiDe: '', cantidad: '', concepto: 'ABONO', fechaPago: '' },
+        form: { recibiDe: '', cantidad: '', concepto: 'Abono', fechaPago: '' },
         folioPreview: 1,
         sidebarAbierto: true,
         cargando: false,
@@ -15,7 +15,7 @@ document.addEventListener('alpine:init', () => {
         _flatpickr: null,
         _tsComprador: null,
         _tsTerreno: null,
-        _conceptoAuto: 'ABONO',
+        _conceptoAuto: 'Abono',
 
         async init() {
             this.form.fechaPago = new Date().toISOString().split('T')[0];
@@ -141,7 +141,7 @@ document.addEventListener('alpine:init', () => {
 
         actualizarConcepto() {
             const desc = (this.terreno.descripcion || '').trim();
-            const auto = (desc ? `Abono ${desc}` : 'Abono').toUpperCase();
+            const auto = desc ? `Abono ${desc}` : 'Abono';
             if (!this.form.concepto || this.form.concepto === this._conceptoAuto) {
                 this.form.concepto = auto;
             }

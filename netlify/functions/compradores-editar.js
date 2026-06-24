@@ -20,12 +20,19 @@ exports.handler = async (event) => {
     if (!compradorId || !nombre || !nombre.trim()) {
         return { statusCode: 400, body: JSON.stringify({ mensaje: 'Faltan datos requeridos' }) };
     }
+    const tel = (telefono || '').trim();
+    if (!/^\d{10}$/.test(tel)) {
+        return { statusCode: 400, body: JSON.stringify({ mensaje: 'El teléfono debe tener 10 dígitos' }) };
+    }
+    if (!direccion || !direccion.trim()) {
+        return { statusCode: 400, body: JSON.stringify({ mensaje: 'La dirección es requerida' }) };
+    }
 
     try {
         const db = await obtenerConexion();
         await db.execute(
             'UPDATE compradores SET nombre = ?, telefono = ?, direccion = ? WHERE id = ?',
-            [nombre.trim(), telefono || null, direccion || null, parseInt(compradorId)]
+            [nombre.trim(), tel, direccion.trim(), parseInt(compradorId)]
         );
 
         return { statusCode: 200, body: JSON.stringify({ ok: true }) };

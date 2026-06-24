@@ -24,11 +24,11 @@ const titulo = modo === 'editar' ? 'Editar comprador' : 'Nuevo comprador';
         </div>
         <div class="grupo-campo">
           <label>Teléfono</label>
-          <InputTelefono modelo="form.telefono" />
+          <InputTelefono modelo="form.telefono" requerido />
         </div>
         <div class="grupo-campo">
           <label>Dirección</label>
-          <input type="text" x-model="form.direccion" placeholder="Calle, colonia, ciudad" />
+          <input type="text" x-model="form.direccion" placeholder="Calle, colonia, ciudad" required />
         </div>
       </div>
     </div>

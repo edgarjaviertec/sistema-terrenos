@@ -44,9 +44,18 @@ exports.handler = async (event) => {
         // 1. Obtener o crear comprador
         let idComprador = compradorId;
         if (!idComprador) {
+            const telComprador = (telefonoComprador || '').trim();
+            if (!/^\d{10}$/.test(telComprador)) {
+                await db.execute('ROLLBACK');
+                return { statusCode: 400, body: JSON.stringify({ mensaje: 'El teléfono del comprador debe tener 10 dígitos' }) };
+            }
+            if (!direccionComprador || !direccionComprador.trim()) {
+                await db.execute('ROLLBACK');
+                return { statusCode: 400, body: JSON.stringify({ mensaje: 'La dirección del comprador es requerida' }) };
+            }
             const [res] = await db.execute(
                 'INSERT INTO compradores (nombre, telefono, direccion) VALUES (?, ?, ?)',
-                [nombreComprador.trim(), telefonoComprador || null, direccionComprador || null]
+                [nombreComprador.trim(), telComprador, direccionComprador.trim()]
             );
             idComprador = res.insertId;
         }

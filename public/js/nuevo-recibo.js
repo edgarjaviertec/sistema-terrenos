@@ -169,6 +169,8 @@ document.addEventListener('alpine:init', () => {
             if (!this.compradorSel) { this.error = 'Selecciona o crea un comprador.'; return; }
             if (!this.terrenoSel) { this.error = 'Selecciona o crea un terreno.'; return; }
             if (this.esCompradorNuevo && !this.comprador.nombre.trim()) { this.error = 'El nombre del comprador es requerido.'; return; }
+            if (this.esCompradorNuevo && !/^\d{10}$/.test((this.comprador.telefono || '').trim())) { this.error = 'El teléfono del comprador debe tener 10 dígitos.'; return; }
+            if (this.esCompradorNuevo && !this.comprador.direccion.trim()) { this.error = 'La dirección del comprador es requerida.'; return; }
             if (this.esTerrenoNuevo && (!this.terreno.descripcion.trim() || this.terreno.costo_total === '' || this.terreno.abono_minimo === '')) {
                 this.error = 'Completa descripción, costo y abono mínimo del terreno nuevo.';
                 return;

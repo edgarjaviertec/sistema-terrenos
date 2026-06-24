@@ -40,6 +40,14 @@ document.addEventListener('alpine:init', () => {
                 this.error = 'El nombre es requerido.';
                 return;
             }
+            if (!/^\d{10}$/.test((this.form.telefono || '').trim())) {
+                this.error = 'El teléfono debe tener 10 dígitos.';
+                return;
+            }
+            if (!this.form.direccion.trim()) {
+                this.error = 'La dirección es requerida.';
+                return;
+            }
 
             this.cargando = true;
             try {

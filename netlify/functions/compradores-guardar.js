@@ -20,12 +20,19 @@ exports.handler = async (event) => {
     if (!nombre || !nombre.trim()) {
         return { statusCode: 400, body: JSON.stringify({ mensaje: 'El nombre es requerido' }) };
     }
+    const tel = (telefono || '').trim();
+    if (!/^\d{10}$/.test(tel)) {
+        return { statusCode: 400, body: JSON.stringify({ mensaje: 'El teléfono debe tener 10 dígitos' }) };
+    }
+    if (!direccion || !direccion.trim()) {
+        return { statusCode: 400, body: JSON.stringify({ mensaje: 'La dirección es requerida' }) };
+    }
 
     try {
         const db = await obtenerConexion();
         const [resultado] = await db.execute(
             'INSERT INTO compradores (nombre, telefono, direccion) VALUES (?, ?, ?)',
-            [nombre.trim(), telefono || null, direccion || null]
+            [nombre.trim(), tel, direccion.trim()]
         );
 
         return { statusCode: 200, body: JSON.stringify({ ok: true, compradorId: resultado.insertId }) };

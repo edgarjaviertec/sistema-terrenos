@@ -72,6 +72,13 @@ input:focus, select:focus, textarea:focus {
     background: #ffff99;
 }
 
+input:disabled, select:disabled, textarea:disabled {
+    background: #ededed;
+    color: #888;
+    border-color: var(--gris-borde);
+    cursor: not-allowed;
+}
+
 label {
     display: block;
     font-size: var(--tamano-label);

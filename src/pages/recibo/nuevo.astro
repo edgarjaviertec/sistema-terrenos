@@ -21,6 +21,17 @@ import Layout from '../../layouts/Layout.astro';
         min-height: auto;
         box-shadow: none;
       }
+      /* Evita el salto de altura: resetea márgenes/padding de los hijos */
+      .ts-wrapper .ts-control > input,
+      .ts-wrapper .ts-control > .item {
+        margin: 0;
+        padding: 0;
+        line-height: 1.5;
+      }
+      /* Tom Select fija un width inline al input que provoca wrap; lo forzamos */
+      .ts-wrapper .ts-control > input {
+        width: auto !important;
+      }
       .ts-wrapper.focus .ts-control { box-shadow: none; border-color: var(--negro); }
       .ts-dropdown { border: var(--borde); border-radius: var(--radio); margin-top: 2px; }
     </style>

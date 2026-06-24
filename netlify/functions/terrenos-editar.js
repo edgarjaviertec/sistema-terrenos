@@ -25,6 +25,13 @@ exports.handler = async (event) => {
     const abono = parseFloat(abonoMinimo);
     const dia = diaPago ? parseInt(diaPago) : null;
 
+    // dia_pago es obligatorio solo para frecuencia mensual (default). Para
+    // frecuencias futuras puede ir nulo, por eso la columna sigue siendo nullable.
+    const frecuencia = body.frecuenciaPago || 'mensual';
+    if (frecuencia === 'mensual' && (dia == null || dia < 1 || dia > 31)) {
+        return { statusCode: 400, body: JSON.stringify({ mensaje: 'El día de pago es obligatorio (1-31) para pagos mensuales' }) };
+    }
+
     try {
         const db = await obtenerConexion();
 

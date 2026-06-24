@@ -67,6 +67,12 @@ exports.handler = async (event) => {
                 await db.execute('ROLLBACK');
                 return { statusCode: 400, body: JSON.stringify({ mensaje: 'El costo total y abono mínimo son requeridos para un terreno nuevo' }) };
             }
+            // dia_pago obligatorio solo para frecuencia mensual (default); nullable para frecuencias futuras.
+            const diaTerreno = diaPago ? parseInt(diaPago) : null;
+            if ((frecuenciaPago || 'mensual') === 'mensual' && (diaTerreno == null || diaTerreno < 1 || diaTerreno > 31)) {
+                await db.execute('ROLLBACK');
+                return { statusCode: 400, body: JSON.stringify({ mensaje: 'El día de pago del terreno es obligatorio (1-31)' }) };
+            }
             const [res] = await db.execute(
                 `INSERT INTO terrenos (comprador_id, descripcion, costo_total, abono_minimo,
                  frecuencia_pago, dia_pago, saldo_actual, usuario_id_creador)
@@ -77,7 +83,7 @@ exports.handler = async (event) => {
                     parseFloat(costoTotal),
                     parseFloat(abonoMinimo),
                     frecuenciaPago || 'mensual',
-                    diaPago ? parseInt(diaPago) : null,
+                    diaTerreno,
                     parseFloat(costoTotal),
                     usuario.id
                 ]

@@ -63,6 +63,11 @@ document.addEventListener('alpine:init', () => {
                 this.error = 'El costo total y el abono mínimo son requeridos.';
                 return;
             }
+            const dia = parseInt(this.form.diaPago);
+            if (!dia || dia < 1 || dia > 31) {
+                this.error = 'El día de pago es obligatorio (1-31).';
+                return;
+            }
 
             this.cargando = true;
             try {

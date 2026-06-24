@@ -175,6 +175,10 @@ document.addEventListener('alpine:init', () => {
                 this.error = 'Completa descripción, costo y abono mínimo del terreno nuevo.';
                 return;
             }
+            if (this.esTerrenoNuevo) {
+                const dia = parseInt(this.terreno.dia_pago);
+                if (!dia || dia < 1 || dia > 31) { this.error = 'El día de pago del terreno es obligatorio (1-31).'; return; }
+            }
             if (this.form.cantidad === '' || !this.form.fechaPago) { this.error = 'La cantidad y la fecha son requeridas.'; return; }
             if (!this.form.recibiDe || !this.form.recibiDe.trim()) { this.error = 'El campo "Recibí de" es obligatorio.'; return; }
             if (!this.form.concepto || !this.form.concepto.trim()) { this.error = 'El concepto es obligatorio.'; return; }

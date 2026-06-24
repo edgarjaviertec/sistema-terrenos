@@ -157,7 +157,8 @@
         }
 
         .sidebar-body input,
-        .sidebar-body select { text-transform: uppercase; }
+        .sidebar-body select,
+        .sidebar-body textarea { text-transform: uppercase; }
 
         .sidebar-footer {
             padding: 1rem;

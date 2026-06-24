@@ -4,6 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 <Layout title="Nuevo Recibo — Sistema de Terrenos" chrome={false}>
   <Fragment slot="head">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2/dist/css/tom-select.min.css" />
     <link rel="stylesheet" href="/css/machote.css" />
     <style is:global>
       .campo-nuevo {
@@ -12,6 +13,16 @@ import Layout from '../../layouts/Layout.astro';
         border-radius: var(--radio);
         padding: 0.75rem;
       }
+      /* Tom Select acorde al estilo */
+      .ts-wrapper .ts-control {
+        border: var(--borde);
+        border-radius: var(--radio);
+        padding: 0.5rem 0.75rem;
+        min-height: auto;
+        box-shadow: none;
+      }
+      .ts-wrapper.focus .ts-control { box-shadow: none; border-color: var(--negro); }
+      .ts-dropdown { border: var(--borde); border-radius: var(--radio); margin-top: 2px; }
     </style>
   </Fragment>
 
@@ -125,13 +136,7 @@ import Layout from '../../layouts/Layout.astro';
           <p class="seccion-titulo">Comprador</p>
           <div class="grupo-campo">
             <label>Comprador</label>
-            <select x-model="compradorSel" @change="alCambiarComprador">
-              <option value="">Selecciona...</option>
-              <template x-for="c in compradores" :key="c.id">
-                <option :value="c.id" x-text="c.nombre"></option>
-              </template>
-              <option value="nuevo">+ Nuevo comprador</option>
-            </select>
+            <select x-ref="selComprador"></select>
           </div>
           <div class="campo-nuevo pila" x-show="esCompradorNuevo" x-cloak style="gap:0.5rem;">
             <div class="grupo-campo">
@@ -151,13 +156,7 @@ import Layout from '../../layouts/Layout.astro';
           <p class="seccion-titulo">Terreno</p>
           <div class="grupo-campo">
             <label>Terreno</label>
-            <select x-model="terrenoSel" @change="alCambiarTerreno" :disabled="!compradorSel || esCompradorNuevo">
-              <option value="">Selecciona...</option>
-              <template x-for="t in terrenos" :key="t.id">
-                <option :value="t.id" x-text="t.descripcion"></option>
-              </template>
-              <option value="nuevo">+ Nuevo terreno</option>
-            </select>
+            <select x-ref="selTerreno"></select>
           </div>
           <div class="campo-nuevo pila" x-show="esTerrenoNuevo" x-cloak style="gap:0.5rem;">
             <div class="grupo-campo">
@@ -221,6 +220,7 @@ import Layout from '../../layouts/Layout.astro';
   <Fragment slot="scripts">
     <script is:inline src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script is:inline src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/tom-select@2/dist/js/tom-select.complete.min.js"></script>
     <script is:inline src="/js/nuevo-recibo.js"></script>
   </Fragment>
 </Layout>

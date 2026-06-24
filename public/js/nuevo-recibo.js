@@ -13,13 +13,18 @@ document.addEventListener('alpine:init', () => {
         cargando: false,
         error: '',
         _flatpickr: null,
+        _tsComprador: null,
+        _tsTerreno: null,
         _conceptoAuto: 'ABONO',
 
         async init() {
             this.form.fechaPago = new Date().toISOString().split('T')[0];
             await this.cargarVendedor();
             await this.cargarCompradores();
-            this.$nextTick(() => this.inicializarFlatpickr());
+            this.$nextTick(() => {
+                this.inicializarFlatpickr();
+                this.inicializarSelects();
+            });
             this.$watch('terreno.descripcion', () => this.actualizarConcepto());
         },
 
@@ -45,24 +50,78 @@ document.addEventListener('alpine:init', () => {
             } catch {}
         },
 
-        async alCambiarComprador() {
-            this.terrenoSel = '';
+        inicializarSelects() {
+            const self = this;
+
+            this._tsComprador = new TomSelect(this.$refs.selComprador, {
+                options: [
+                    ...this.compradores.map(c => ({ value: String(c.id), text: c.nombre })),
+                    { value: 'nuevo', text: '+ Nuevo comprador' }
+                ],
+                placeholder: 'Selecciona un comprador...',
+                allowEmptyOption: true,
+                onChange(valor) { self.manejarCambioComprador(valor); }
+            });
+
+            this._tsTerreno = new TomSelect(this.$refs.selTerreno, {
+                options: [{ value: 'nuevo', text: '+ Nuevo terreno' }],
+                placeholder: 'Selecciona un terreno...',
+                allowEmptyOption: true,
+                onChange(valor) { self.manejarCambioTerreno(valor); }
+            });
+            this._tsTerreno.disable();
+        },
+
+        async manejarCambioComprador(valor) {
+            this.compradorSel = valor;
             this.terrenos = [];
             this.terreno = { descripcion: '', costo_total: '', abono_minimo: '', dia_pago: '' };
             this.folioPreview = 1;
 
-            if (this.compradorSel === 'nuevo') {
+            // Reiniciar el select de terreno
+            this._tsTerreno.clear(true);
+            this._tsTerreno.clearOptions();
+
+            if (valor === 'nuevo') {
                 this.comprador = { nombre: '', telefono: '', direccion: '' };
                 this.form.recibiDe = '';
-                this.terrenoSel = 'nuevo'; // un comprador nuevo no tiene terrenos
-            } else if (this.compradorSel) {
-                const c = this.compradores.find(x => x.id == this.compradorSel);
+                this.terrenoSel = 'nuevo';
+                this._tsTerreno.addOption({ value: 'nuevo', text: '+ Nuevo terreno' });
+                this._tsTerreno.setValue('nuevo', true);
+                this._tsTerreno.disable();
+            } else if (valor) {
+                const c = this.compradores.find(x => x.id == valor);
                 this.comprador = { nombre: c.nombre, telefono: c.telefono || '', direccion: c.direccion || '' };
                 this.form.recibiDe = c.nombre;
-                await this.cargarTerrenos(this.compradorSel);
+                await this.cargarTerrenos(valor);
+                this._tsTerreno.addOptions([
+                    ...this.terrenos.map(t => ({ value: String(t.id), text: t.descripcion })),
+                    { value: 'nuevo', text: '+ Nuevo terreno' }
+                ]);
+                this._tsTerreno.enable();
+                this.terrenoSel = '';
             } else {
                 this.comprador = { nombre: '', telefono: '', direccion: '' };
                 this.form.recibiDe = '';
+                this.terrenoSel = '';
+                this._tsTerreno.disable();
+            }
+        },
+
+        async manejarCambioTerreno(valor) {
+            this.terrenoSel = valor;
+            if (valor === 'nuevo') {
+                this.terreno = { descripcion: '', costo_total: '', abono_minimo: '', dia_pago: '' };
+                this.folioPreview = 1;
+            } else if (valor) {
+                const t = this.terrenos.find(x => x.id == valor);
+                this.terreno = {
+                    descripcion: t.descripcion,
+                    costo_total: t.costo_total,
+                    abono_minimo: t.abono_minimo,
+                    dia_pago: t.dia_pago || ''
+                };
+                await this.cargarFolio(valor);
             }
         },
 
@@ -71,22 +130,6 @@ document.addEventListener('alpine:init', () => {
                 const res = await fetch(`/.netlify/functions/terrenos-buscar?compradorId=${compradorId}&descripcion=`);
                 if (res.ok) this.terrenos = (await res.json()).terrenos;
             } catch {}
-        },
-
-        async alCambiarTerreno() {
-            if (this.terrenoSel === 'nuevo') {
-                this.terreno = { descripcion: '', costo_total: '', abono_minimo: '', dia_pago: '' };
-                this.folioPreview = 1;
-            } else if (this.terrenoSel) {
-                const t = this.terrenos.find(x => x.id == this.terrenoSel);
-                this.terreno = {
-                    descripcion: t.descripcion,
-                    costo_total: t.costo_total,
-                    abono_minimo: t.abono_minimo,
-                    dia_pago: t.dia_pago || ''
-                };
-                await this.cargarFolio(this.terrenoSel);
-            }
         },
 
         async cargarFolio(terrenoId) {

@@ -24,6 +24,14 @@ exports.handler = async (event) => {
         return { statusCode: 400, body: JSON.stringify({ mensaje: 'Faltan datos requeridos' }) };
     }
 
+    if (!recibiDe || !recibiDe.trim()) {
+        return { statusCode: 400, body: JSON.stringify({ mensaje: 'El campo "Recibí de" es obligatorio' }) };
+    }
+
+    if (!concepto || !concepto.trim()) {
+        return { statusCode: 400, body: JSON.stringify({ mensaje: 'El concepto es obligatorio' }) };
+    }
+
     const db = await obtenerConexion();
 
     try {
@@ -44,7 +52,7 @@ exports.handler = async (event) => {
         const [res] = await db.execute(
             `INSERT INTO recibos (terreno_id, recibi_de, folio, cantidad_pago, tipo_concepto, concepto, fecha_pago, usuario_id_creador)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [terrenoId, recibiDe || null, nuevoFolio, cantidadNum, tipoConcepto || 'abono', concepto || null, fechaPago, usuario.id]
+            [terrenoId, recibiDe.trim(), nuevoFolio, cantidadNum, tipoConcepto || 'abono', concepto.trim(), fechaPago, usuario.id]
         );
 
         // Actualizar saldo

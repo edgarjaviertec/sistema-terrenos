@@ -24,6 +24,14 @@ exports.handler = async (event) => {
         return { statusCode: 400, body: JSON.stringify({ mensaje: 'Faltan datos requeridos' }) };
     }
 
+    if (!recibiDe || !recibiDe.trim()) {
+        return { statusCode: 400, body: JSON.stringify({ mensaje: 'El campo "Recibí de" es obligatorio' }) };
+    }
+
+    if (!concepto || !concepto.trim()) {
+        return { statusCode: 400, body: JSON.stringify({ mensaje: 'El concepto es obligatorio' }) };
+    }
+
     try {
         const db = await obtenerConexion();
 
@@ -57,10 +65,10 @@ exports.handler = async (event) => {
             `UPDATE recibos SET recibi_de = ?, cantidad_pago = ?, tipo_concepto = ?,
              concepto = ?, fecha_pago = ? WHERE id = ?`,
             [
-                recibiDe || null,
+                recibiDe.trim(),
                 parseFloat(cantidad),
                 tipoConcepto || 'abono',
-                concepto || null,
+                concepto.trim(),
                 fechaPago,
                 parseInt(reciboId)
             ]

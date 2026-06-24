@@ -174,6 +174,8 @@ document.addEventListener('alpine:init', () => {
                 return;
             }
             if (this.form.cantidad === '' || !this.form.fechaPago) { this.error = 'La cantidad y la fecha son requeridas.'; return; }
+            if (!this.form.recibiDe || !this.form.recibiDe.trim()) { this.error = 'El campo "Recibí de" es obligatorio.'; return; }
+            if (!this.form.concepto || !this.form.concepto.trim()) { this.error = 'El concepto es obligatorio.'; return; }
 
             this.cargando = true;
             try {

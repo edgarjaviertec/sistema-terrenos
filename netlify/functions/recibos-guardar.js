@@ -28,6 +28,14 @@ exports.handler = async (event) => {
         return { statusCode: 400, body: JSON.stringify({ mensaje: 'Faltan datos requeridos' }) };
     }
 
+    if (!recibiDe || !recibiDe.trim()) {
+        return { statusCode: 400, body: JSON.stringify({ mensaje: 'El campo "Recibí de" es obligatorio' }) };
+    }
+
+    if (!concepto || !concepto.trim()) {
+        return { statusCode: 400, body: JSON.stringify({ mensaje: 'El concepto es obligatorio' }) };
+    }
+
     const db = await obtenerConexion();
 
     try {
@@ -91,11 +99,11 @@ exports.handler = async (event) => {
              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 idTerreno,
-                (recibiDe && recibiDe.trim()) ? recibiDe.trim() : nombreComprador.trim(),
+                recibiDe.trim(),
                 nuevoFolio,
                 cantidadNum,
                 tipoConcepto || 'abono',
-                concepto || null,
+                concepto.trim(),
                 fechaPago,
                 usuario.id
             ]

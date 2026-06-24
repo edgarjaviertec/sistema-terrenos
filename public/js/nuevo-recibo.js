@@ -161,7 +161,8 @@ document.addEventListener('alpine:init', () => {
                 const datos = await res.json();
                 if (!res.ok) { this.error = datos.mensaje || 'Error al guardar el recibo.'; return; }
 
-                window.location.href = `/recibo/editar?id=${datos.reciboId}`;
+                sessionStorage.setItem('flash', 'Recibo creado con éxito.');
+                window.location.href = '/';
             } catch {
                 this.error = 'Error de conexión. Intenta de nuevo.';
             } finally {

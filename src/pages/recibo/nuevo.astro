@@ -128,12 +128,12 @@ import InputTelefono from '../../components/InputTelefono.astro';
           <p class="seccion-titulo">Comprador</p>
           <div class="grupo-campo">
             <label>Comprador</label>
-            <select x-ref="selComprador"></select>
+            <select x-ref="selComprador" required></select>
           </div>
           <div class="campo-nuevo pila" x-show="esCompradorNuevo" x-cloak style="gap:0.5rem;">
             <div class="grupo-campo">
               <label>Nombre</label>
-              <input type="text" x-model="comprador.nombre" />
+              <input type="text" x-model="comprador.nombre" required />
             </div>
             <div class="grupo-campo">
               <label>Teléfono</label>
@@ -148,21 +148,21 @@ import InputTelefono from '../../components/InputTelefono.astro';
           <p class="seccion-titulo">Terreno</p>
           <div class="grupo-campo">
             <label>Terreno</label>
-            <select x-ref="selTerreno"></select>
+            <select x-ref="selTerreno" required></select>
           </div>
           <div class="campo-nuevo pila" x-show="esTerrenoNuevo" x-cloak style="gap:0.5rem;">
             <div class="grupo-campo">
               <label>Descripción</label>
-              <textarea x-model="terreno.descripcion" rows="2"></textarea>
+              <textarea x-model="terreno.descripcion" rows="2" required></textarea>
             </div>
             <div class="fila">
               <div class="grupo-campo">
                 <label>Costo total</label>
-                <input type="number" step="0.01" x-model="terreno.costo_total" />
+                <input type="number" step="0.01" x-model="terreno.costo_total" required />
               </div>
               <div class="grupo-campo">
                 <label>Abono mínimo</label>
-                <input type="number" step="0.01" x-model="terreno.abono_minimo" />
+                <input type="number" step="0.01" x-model="terreno.abono_minimo" required />
               </div>
             </div>
             <div class="grupo-campo">
@@ -174,7 +174,7 @@ import InputTelefono from '../../components/InputTelefono.astro';
           <p class="seccion-titulo">Datos del pago</p>
           <div class="grupo-campo">
             <label>Fecha de pago</label>
-            <input type="text" x-ref="fechaNuevo" />
+            <input type="text" x-ref="fechaNuevo" required />
           </div>
           <div class="grupo-campo">
             <label>Recibí de</label>
@@ -182,7 +182,7 @@ import InputTelefono from '../../components/InputTelefono.astro';
           </div>
           <div class="grupo-campo">
             <label>Cantidad</label>
-            <input type="number" step="0.01" x-model="form.cantidad" />
+            <input type="number" step="0.01" x-model="form.cantidad" required />
           </div>
           <div class="grupo-campo">
             <label>Concepto</label>

@@ -36,7 +36,7 @@ Sobre el editor de recibo actual:
 
 ---
 
-## Fase 3 — Editor de recibo unificado (2 vistas)
+## Fase 3 — Editor de recibo unificado (2 vistas) ✅ HECHA
 
 - Un `<EditorRecibo>`: machote (izq) + sidebar (der) + footer (Imprimir/PDF/Cancelar/Guardar).
 - Rutas: `/recibo/nuevo` y `/recibo/editar` (duplicar = flag de editar).

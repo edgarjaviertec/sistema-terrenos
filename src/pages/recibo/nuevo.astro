@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import InputTelefono from '../../components/InputTelefono.astro';
 ---
 <Layout title="Nuevo Recibo — Sistema de Terrenos" chrome={false}>
   <Fragment slot="head">
@@ -156,9 +157,7 @@ import Layout from '../../layouts/Layout.astro';
             </div>
             <div class="grupo-campo">
               <label>Teléfono</label>
-              <input type="tel" inputmode="numeric" maxlength="10" x-model="comprador.telefono"
-                @keydown="if (!$event.ctrlKey && !$event.metaKey && $event.key.length === 1 && !/[0-9]/.test($event.key)) $event.preventDefault()"
-                @paste.prevent="comprador.telefono = $event.clipboardData.getData('text').replace(/\D/g, '').slice(0, 10)" />
+              <InputTelefono modelo="comprador.telefono" />
             </div>
             <div class="grupo-campo">
               <label>Dirección</label>

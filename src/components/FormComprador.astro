@@ -1,4 +1,6 @@
 ---
+import InputTelefono from './InputTelefono.astro';
+
 const { modo = 'nuevo' } = Astro.props;
 const titulo = modo === 'editar' ? 'Editar comprador' : 'Nuevo comprador';
 ---
@@ -22,15 +24,7 @@ const titulo = modo === 'editar' ? 'Editar comprador' : 'Nuevo comprador';
         </div>
         <div class="grupo-campo">
           <label>Teléfono</label>
-          <input
-            type="tel"
-            inputmode="numeric"
-            placeholder="9981234567"
-            maxlength="10"
-            x-model="form.telefono"
-            @keydown="if (!$event.ctrlKey && !$event.metaKey && $event.key.length === 1 && !/[0-9]/.test($event.key)) $event.preventDefault()"
-            @paste.prevent="form.telefono = $event.clipboardData.getData('text').replace(/\D/g, '').slice(0, 10)"
-          />
+          <InputTelefono modelo="form.telefono" />
         </div>
         <div class="grupo-campo">
           <label>Dirección</label>

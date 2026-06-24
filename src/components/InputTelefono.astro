@@ -1,0 +1,17 @@
+---
+// Input de teléfono reutilizable: solo dígitos (bloquea letras/símbolos al
+// teclear y al pegar), máximo 10. Recibe la expresión Alpine del modelo.
+const { modelo, placeholder = '9981234567' } = Astro.props;
+
+const onKeydown = "if (!$event.ctrlKey && !$event.metaKey && $event.key.length === 1 && !/[0-9]/.test($event.key)) $event.preventDefault()";
+const onPaste = `${modelo} = $event.clipboardData.getData('text').replace(/\\D/g, '').slice(0, 10)`;
+---
+<input
+  type="tel"
+  inputmode="numeric"
+  maxlength="10"
+  placeholder={placeholder}
+  x-model={modelo}
+  x-on:keydown={onKeydown}
+  x-on:paste.prevent={onPaste}
+/>

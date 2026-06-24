@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import InputTelefono from '../components/InputTelefono.astro';
 ---
 <Layout title="Configuración — Sistema de Terrenos">
   <div class="contenedor-angosto" x-data="configuracion">
@@ -22,7 +23,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
           <div class="grupo-campo">
             <label>Teléfono</label>
-            <input type="tel" x-model="form['vendedor.telefono']" placeholder="9981234567" />
+            <InputTelefono modelo="form['vendedor.telefono']" />
           </div>
           <div class="grupo-campo">
             <label>Dirección</label>

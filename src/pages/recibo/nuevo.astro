@@ -14,27 +14,7 @@ import InputTelefono from '../../components/InputTelefono.astro';
         border-radius: var(--radio);
         padding: 0.75rem;
       }
-      /* Tom Select acorde al estilo */
-      .ts-wrapper .ts-control {
-        border: var(--borde);
-        border-radius: var(--radio);
-        padding: 0.5rem 0.75rem;
-        min-height: auto;
-        box-shadow: none;
-      }
-      /* Evita el salto de altura: resetea márgenes/padding de los hijos */
-      .ts-wrapper .ts-control > input,
-      .ts-wrapper .ts-control > .item {
-        margin: 0;
-        padding: 0;
-        line-height: 1.5;
-      }
-      /* Tom Select fija un width inline al input que provoca wrap; lo forzamos */
-      .ts-wrapper .ts-control > input {
-        width: auto !important;
-      }
-      .ts-wrapper.focus .ts-control { box-shadow: none; border-color: var(--negro); }
-      .ts-dropdown { border: var(--borde); border-radius: var(--radio); margin-top: 2px; }
+      /* Estilos de Tom Select movidos a estilos.css (compartidos con terrenos) */
     </style>
   </Fragment>
 

@@ -23,12 +23,7 @@ const titulo = modo === 'editar' ? 'Editar terreno' : 'Nuevo terreno';
             <span x-show="esEditar" x-cloak style="font-weight:400;font-size:0.8rem;color:#888">(no se puede cambiar)</span>
           </label>
           <template x-if="!esEditar">
-            <select x-model="form.compradorId" required>
-              <option value="">Selecciona un comprador...</option>
-              <template x-for="c in compradores" :key="c.id">
-                <option :value="c.id" x-text="c.nombre"></option>
-              </template>
-            </select>
+            <select x-ref="selComprador" required></select>
           </template>
           <template x-if="esEditar">
             <input type="text" :value="compradorNombre" disabled />

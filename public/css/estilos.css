@@ -146,12 +146,26 @@ hr {
     gap: 0.25rem;
 }
 
-.grupo-campo:has(> :required) label::after{
+.grupo-campo:has(:required) label::after{
     content: "\*" / "";
     color: var(--rojo);
     font-family: "Font Awesome 7 Pro";
     font-size: 18px;
 }
+
+/* Tom Select: hereda el estilo de los inputs del sistema (recibo y terrenos) */
+.ts-wrapper .ts-control {
+    border: var(--borde);
+    border-radius: var(--radio);
+    padding: 0.5rem 0.75rem;
+    min-height: auto;
+    box-shadow: none;
+}
+.ts-wrapper .ts-control > input,
+.ts-wrapper .ts-control > .item { margin: 0; padding: 0; line-height: 1.5; }
+.ts-wrapper .ts-control > input { width: auto !important; }
+.ts-wrapper.focus .ts-control { box-shadow: none; border-color: var(--negro); }
+.ts-dropdown { border: var(--borde); border-radius: var(--radio); margin-top: 2px; }
 
 /* ─── COMPONENTS ─── */
 

@@ -7,6 +7,7 @@ document.addEventListener('alpine:init', () => {
         compradorNombre: '',
         cargando: false,
         error: '',
+        _tsComprador: null,
 
         async init() {
             this.esEditar = window.location.pathname.includes('/editar');
@@ -18,7 +19,20 @@ document.addEventListener('alpine:init', () => {
                 await this.cargar();
             } else {
                 await this.cargarCompradores();
+                this.$nextTick(() => this.inicializarComprador());
             }
+        },
+
+        // Tom Select solo como autocompletado de compradores existentes (sin "+ Nuevo")
+        inicializarComprador() {
+            if (!this.$refs.selComprador) return;
+            const self = this;
+            this._tsComprador = new TomSelect(this.$refs.selComprador, {
+                options: this.compradores.map(c => ({ value: String(c.id), text: c.nombre })),
+                placeholder: 'Selecciona un comprador...',
+                allowEmptyOption: true,
+                onChange(valor) { self.form.compradorId = valor; }
+            });
         },
 
         async cargarCompradores() {

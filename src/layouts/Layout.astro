@@ -2,7 +2,7 @@
 import ModalEliminar from '../components/ModalEliminar.astro';
 
 const {
-  title = 'Sistema de Terrenos',
+  title = 'Mis Terrenos',
   chrome = true,
   protegida = true
 } = Astro.props;
@@ -28,7 +28,7 @@ const activo = (prefijo) =>
       <div class="app__backdrop no-imprimir" x-show="sidebarAbierto" @click="cerrar()" x-cloak></div>
 
       <aside class="app__sidebar no-imprimir" :class="sidebarAbierto && 'app__sidebar--abierto'">
-        <div class="app__marca">Sistema de Terrenos</div>
+        <div class="app__marca">Mis Terrenos</div>
         <nav class="app__nav">
           <a href="/" class:list={['app__link', { 'app__link--activo': activo('/') }]}><i class="fa-solid fa-file-invoice"></i> Recibos</a>
           <a href="/compradores" class:list={['app__link', { 'app__link--activo': activo('/compradores') }]}><i class="fa-solid fa-users"></i> Compradores</a>

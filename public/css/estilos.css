@@ -486,6 +486,12 @@ hr {
 .app__link:hover { background: #222; }
 .app__link i { width: 1.1rem; text-align: center; }
 
+.app__link--activo,
+.app__link--activo:hover {
+    background: var(--blanco);
+    color: var(--negro);
+}
+
 .app__nav-sep { height: 1px; background: #333; margin: 0.5rem 0.85rem; }
 
 .app__main { flex: 1; display: flex; flex-direction: column; min-width: 0; }

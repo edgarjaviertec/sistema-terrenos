@@ -6,6 +6,10 @@ const {
   chrome = true,
   protegida = true
 } = Astro.props;
+
+const ruta = Astro.url.pathname;
+const activo = (prefijo) =>
+  prefijo === '/' ? ruta === '/' : ruta.startsWith(prefijo);
 ---
 <!DOCTYPE html>
 <html lang="es">
@@ -26,9 +30,9 @@ const {
       <aside class="app__sidebar no-imprimir" :class="sidebarAbierto && 'app__sidebar--abierto'">
         <div class="app__marca">Sistema de Terrenos</div>
         <nav class="app__nav">
-          <a href="/" class="app__link"><i class="fa-solid fa-file-invoice"></i> Recibos</a>
-          <a href="/compradores" class="app__link"><i class="fa-solid fa-users"></i> Compradores</a>
-          <a href="/terrenos" class="app__link"><i class="fa-solid fa-map-location-dot"></i> Terrenos</a>
+          <a href="/" class:list={['app__link', { 'app__link--activo': activo('/') }]}><i class="fa-solid fa-file-invoice"></i> Recibos</a>
+          <a href="/compradores" class:list={['app__link', { 'app__link--activo': activo('/compradores') }]}><i class="fa-solid fa-users"></i> Compradores</a>
+          <a href="/terrenos" class:list={['app__link', { 'app__link--activo': activo('/terrenos') }]}><i class="fa-solid fa-map-location-dot"></i> Terrenos</a>
         </nav>
       </aside>
 

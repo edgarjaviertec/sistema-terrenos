@@ -156,7 +156,9 @@ import Layout from '../../layouts/Layout.astro';
             </div>
             <div class="grupo-campo">
               <label>Teléfono</label>
-              <input type="tel" x-model="comprador.telefono" />
+              <input type="tel" inputmode="numeric" maxlength="10" x-model="comprador.telefono"
+                @keydown="if (!$event.ctrlKey && !$event.metaKey && $event.key.length === 1 && !/[0-9]/.test($event.key)) $event.preventDefault()"
+                @paste.prevent="comprador.telefono = $event.clipboardData.getData('text').replace(/\D/g, '').slice(0, 10)" />
             </div>
             <div class="grupo-campo">
               <label>Dirección</label>

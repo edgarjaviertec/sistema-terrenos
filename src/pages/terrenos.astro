@@ -27,14 +27,6 @@ import Layout from '../layouts/Layout.astro';
             </button>
           </div>
         </div>
-        <div class="grupo-campo" style="flex:0 1 200px;">
-          <label>Estado</label>
-          <select x-model="filtros.estado" @change="buscar">
-            <option value="">Todos</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="pagado">Pagado</option>
-          </select>
-        </div>
       </div>
     </div>
 
@@ -59,7 +51,6 @@ import Layout from '../layouts/Layout.astro';
                 <th class="th-orden" @click="ordenar('comprador')">Comprador <i class="fa-solid" :class="iconoOrden('comprador')"></i></th>
                 <th class="th-orden" @click="ordenar('costo')">Costo total <i class="fa-solid" :class="iconoOrden('costo')"></i></th>
                 <th class="th-orden" @click="ordenar('saldo')">Saldo <i class="fa-solid" :class="iconoOrden('saldo')"></i></th>
-                <th class="th-orden" @click="ordenar('estado')">Estado <i class="fa-solid" :class="iconoOrden('estado')"></i></th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -70,7 +61,6 @@ import Layout from '../layouts/Layout.astro';
                   <td x-text="t.comprador_nombre"></td>
                   <td x-text="formatearMonto(t.costo_total)"></td>
                   <td x-text="formatearMonto(t.saldo_actual)"></td>
-                  <td style="text-transform:capitalize" x-text="t.estado"></td>
                   <td>
                     <div class="tabla__acciones">
                       <a :href="'/terrenos/editar?id=' + t.id" class="boton" data-tamanio="pequeno">Editar</a>

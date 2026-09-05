@@ -99,6 +99,10 @@ exports.handler = async (event) => {
 
         // 3. Obtener y actualizar el folio
         await db.execute(
+            'INSERT IGNORE INTO folios_terrenos (terreno_id, ultimo_folio) VALUES (?, 0)',
+            [idTerreno]
+        );
+        await db.execute(
             'UPDATE folios_terrenos SET ultimo_folio = ultimo_folio + 1 WHERE terreno_id = ?',
             [idTerreno]
         );

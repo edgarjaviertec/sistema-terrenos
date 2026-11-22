@@ -8,6 +8,7 @@ const COLUMNAS_ORDEN = {
     descripcion: 't.descripcion',
     comprador: 'c.nombre',
     costo: 't.costo_total',
+    abonado: 'abonado',
     saldo: 't.saldo_actual',
     estado: 't.estado'
 };
@@ -61,7 +62,9 @@ exports.handler = async (event) => {
         const [items] = await db.execute(
             `SELECT t.id, t.descripcion, t.costo_total, t.abono_minimo, t.saldo_actual,
                     t.dia_pago, t.estado, c.nombre AS comprador_nombre,
-                    (SELECT COUNT(*) FROM recibos r WHERE r.terreno_id = t.id) AS recibos_count
+                    (SELECT COUNT(*) FROM recibos r WHERE r.terreno_id = t.id) AS recibos_count,
+                    (SELECT COALESCE(SUM(r.cantidad_pago), 0) FROM recibos r
+                     WHERE r.terreno_id = t.id AND r.tipo_concepto = 'abono') AS abonado
              FROM terrenos t JOIN compradores c ON t.comprador_id = c.id
              ${where}
              ORDER BY ${orderBy}

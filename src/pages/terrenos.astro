@@ -50,6 +50,7 @@ import Layout from '../layouts/Layout.astro';
                 <th class="th-orden" @click="ordenar('descripcion')">Descripción <i class="fa-solid" :class="iconoOrden('descripcion')"></i></th>
                 <th class="th-orden" @click="ordenar('comprador')">Comprador <i class="fa-solid" :class="iconoOrden('comprador')"></i></th>
                 <th class="th-orden" @click="ordenar('costo')">Costo total <i class="fa-solid" :class="iconoOrden('costo')"></i></th>
+                <th class="th-orden" @click="ordenar('abonado')">Abonado <i class="fa-solid" :class="iconoOrden('abonado')"></i></th>
                 <th class="th-orden" @click="ordenar('saldo')">Saldo <i class="fa-solid" :class="iconoOrden('saldo')"></i></th>
                 <th>Acciones</th>
               </tr>
@@ -60,6 +61,7 @@ import Layout from '../layouts/Layout.astro';
                   <td x-text="t.descripcion"></td>
                   <td x-text="t.comprador_nombre"></td>
                   <td x-text="formatearMonto(t.costo_total)"></td>
+                  <td x-text="formatearMonto(t.abonado)"></td>
                   <td x-text="formatearMonto(t.saldo_actual)"></td>
                   <td>
                     <div class="tabla__acciones">

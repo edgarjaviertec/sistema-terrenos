@@ -54,6 +54,14 @@ exports.handler = async (event) => {
 
             await db.execute('DELETE FROM recibos WHERE id = ?', [parseInt(reciboId)]);
 
+            // Reajustar el contador al folio más alto que queda, para poder reutilizar folios borrados
+            await db.execute(
+                `UPDATE folios_terrenos
+                 SET ultimo_folio = COALESCE((SELECT MAX(folio) FROM recibos WHERE terreno_id = ?), 0)
+                 WHERE terreno_id = ?`,
+                [recibo.terreno_id, recibo.terreno_id]
+            );
+
             await db.execute('COMMIT');
         } catch (e) {
             await db.execute('ROLLBACK');
